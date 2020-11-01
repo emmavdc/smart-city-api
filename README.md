@@ -1,1 +1,1 @@
-# smart-city-api - 2020/2021 - Dylan Sohet & Emma Vandecasteele
+# smart-city-api - 2020/2021 - Dylan Sohet & Emma Vandecasteele - 3IGA
