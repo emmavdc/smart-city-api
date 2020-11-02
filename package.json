@@ -1,0 +1,22 @@
+{
+  "name": "smart-city-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emmavdc/smart-city-api.git"
+  },
+  "author": "Sohet Dylan et Vandecasteele Emma",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emmavdc/smart-city-api/issues"
+  },
+  "homepage": "https://github.com/emmavdc/smart-city-api#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
