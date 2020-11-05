@@ -2,6 +2,42 @@ const pool = require('../utils/database');
 const UserModel = require("../model/user");
 
 
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      UserRegistered:
+ *          description: The user is registered
+ *      UserAlreadyExist:
+ *          description: The user already exists
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          error:
+ *                              type: string
+ *
+ *  requestBodies:
+ *      User:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          email:
+ *                              type: string
+ *                          password:
+ *                              type: string
+ *                          firstname:
+ *                              type: string
+ *                      required:
+ *                          - email
+ *                          - password
+ *                          - firstname
+ */
+
+
 module.exports.postUser = async (req, res) => {
     const client = await pool.connect();
     const user = req.body;

@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 
 module.exports.createUser = async (client, user) => {
 
+
     // crypt password
     user.password = bcrypt.hashSync(user.password, saltRounds);
 
