@@ -31,3 +31,32 @@ module.exports.selectUser = async (client, user) => {
         FROM smartcity."user"
         WHERE email = $1`, [user.email]);
 }
+
+module.exports.updateUser = async (client, user) =>{
+    const {rows: updatedUser} =  await client.query(`
+    UPDATE smartcity."user" SET email = $1, password = $2, firstname = $3,
+                            lastname = $4, phone = $5, is_admin = $6,
+                            locality = $7, postal_code = $8, street_number = $9,
+                            street_name = $10, country = $11, picture = $12 
+                            WHERE email = $13 RETURNING user_id;`, 
+                            [user.email, user.password, user.firstname, user.lastname, 
+                                user.phone, user.isAdmin, user.locality, user.postalCode,
+                                user.streetNumber, user.streetName, user.country, user.picture, user.email]);
+    
+    if(user.customer != null){
+        await client.query(`UPDATE smartcity."customer" SET commune = $1, search_walker = $2,
+                                                         search_host = $3
+                                                         WHERE user_id = $4;`,
+                                                         [user.customer.commune, user.customer.searchWalker,
+                                                        user.commune.searchHost, updatedUser[0].user_id]);
+    }
+
+    if(user.supplier != null){
+        await client.query(`UPDATE smartcity."supplier" SET is_host = $1, is_animal_walker = $2,
+                                                        slogan = $3, commune = $4, weight_max = $5, 
+                                                        WHERE user_id = $6;`,
+                                                        [user.supplier.isHost, user.supplier.isAnimalWalker,
+                                                        user.supplier.slogan, user.supplier.commune,
+                                                        user.supplier.weightMax,updatedUser[0].user_id]);
+    }
+}
