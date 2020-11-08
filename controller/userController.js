@@ -48,10 +48,10 @@ module.exports.postUser = async (req, res) => {
         return;
     }
 
-    if(typeof user.postalCode !=- "integer"){
+    /*if(typeof user.postalCode !== "integer"){
         res.sendStatus(400);
         return;
-    }
+    }*/
 
     if(user.customer != null){
         if(typeof user.customer.searchWalker !== "boolean" || typeof user.customer.searchHost !== "boolean"){
@@ -67,9 +67,9 @@ module.exports.postUser = async (req, res) => {
 
     try {
         await client.query("BEGIN;");
-        await UserModel.createUser(client, user);
+        const jwt = await UserModel.createUser(client, user);
         await client.query("COMMIT");
-        res.sendStatus(201);
+        res.status(201).send(jwt);
     } catch (e) {
         await client.query("ROLLBACK;");
         console.log(e);
@@ -102,7 +102,29 @@ module.exports.loginUser = async (req, res) => {
 
 }
 
-module.exports.patchUser = async(req, res) =>{
+module.exports.putUser = async(req, res) =>{
     const client = await pool.connect();
+    const userId = req.session;
+    const userIdParams = req.params.id
+    const user = req.body;
+
+    if(Number(userId) !== Number(userIdParams)){
+        res.sendStatus(403); 
+        return;
+    } 
+
+    try {
+        await client.query("BEGIN;");
+        await UserModel.updateUser(client, user,userId);
+        await client.query("COMMIT");
+        res.sendStatus(200);
+    } 
+    catch (error) {
+        await client.query("ROLLBACK;");
+        console.log(error);
+        res.sendStatus(500);
+    }finally {
+        client.release();
+    }
 
 }

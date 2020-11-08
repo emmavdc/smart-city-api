@@ -24,6 +24,6 @@ router.post('/',  UserController.postUser);
 
 router.post('/actions/login', UserController.loginUser);
 //TODO #6 update user 
-router.patch('/:id', UserController.patchUser);
+router.put('/:id',identificationMiddleware.identification, UserController.putUser);
 
 module.exports = router;

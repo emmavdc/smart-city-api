@@ -6,7 +6,7 @@ module.exports.identification = async (req, res, next) => {
         const bearerToken =  headerAuth.split(' ')[1];
         const decodedToken = jwt.verify(bearerToken, process.env.SECRET);
         if (decodedToken) {
-            req.session = decodedToken.email;
+            req.session = decodedToken.userId;
             next();
         }
         else {
