@@ -17,6 +17,20 @@ const identificationMiddleware = require("../middleware/identification")
  *              $ref: '#/components/responses/UserRegistered'
  *          500:
  *              description: Server error
+ * 
+ * /actions/login:
+ *  post:
+ *      tags:
+ *          - login
+ *      requestBody:
+ *          $ref: '#/components/requestBodies/Login'
+ *      responses:
+ *          201:
+ *              $ref: '#/components/responses/LoginAccepted'
+ *          401:
+ *              $ref: '#/components/responses/LoginRejected'
+ *          500:
+ *              description: Server error
  *
  */
 

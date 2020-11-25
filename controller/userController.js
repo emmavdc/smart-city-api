@@ -31,12 +31,56 @@ const UserModel = require("../model/user");
  *                              type: string
  *                          firstname:
  *                              type: string
+ *                          lastname:
+ *                              type: string
+ *                          phone:
+ *                              type: string
+ *                          isAdmin:
+ *                              type: boolean
+ *                          locality:
+ *                              type: string
+ *                          postalCode:
+ *                              type: integer
+ *                          streetNumber:
+ *                              type: string
+ *                          streetName:
+ *                              type: string
+ *                          country:
+ *                              type: string
+ *                          customer:
+ *                              type: object
+ *                              properties:
+ *                                  searchWalker:
+ *                                      type: boolean
+ *                                  searchHost:
+ *                                      type: boolean
+ *                              required:
+ *                                  - searchWalker
+ *                                  - searchHost
+ *                          supplier:
+ *                              type: object
+ *                              properties:
+ *                                  isHost:
+ *                                      type: boolean
+ *                                  isAnimalWalker:
+ *                                      type: boolean
+ *                              required:
+ *                                  - isHost
+ *                                  - searchHost
  *                      required:
  *                          - email
  *                          - password
  *                          - firstname
+ *                          - lastname
+ *                          - phone
+ *                          - isAdmin
+ *                          - locality
+ *                          - postalCode
+ *                          - streetNumber
+ *                          - streetName
+ *                          - country
+ * 
  */
-
 
 module.exports.postUser = async (req, res) => {
     const client = await pool.connect();
@@ -79,6 +123,41 @@ module.exports.postUser = async (req, res) => {
     }
 
 }
+
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      LoginAccepted:
+ *          description: The user is connected
+ *      LoginRejected:
+ *          description: The user is not connected
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          error:
+ *                              type: string
+ *
+ *  requestBodies:
+ *      Login:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          email:
+ *                              type: string
+ *                          password:
+ *                              type: string
+ *                      required:
+ *                          - email
+ *                          - password
+ */
+
+
+
 
 module.exports.loginUser = async (req, res) => {
     const client = await pool.connect();
