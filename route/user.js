@@ -37,6 +37,8 @@ const identificationMiddleware = require("../middleware/identification")
 router.post('/',  UserController.postUser);
 
 router.post('/actions/login', UserController.loginUser);
+
+router.post('/actions/addadmin', UserController.addAdminUser);
 //TODO #6 update user 
 router.put('/:id',identificationMiddleware.identification, UserController.putUser);
 
