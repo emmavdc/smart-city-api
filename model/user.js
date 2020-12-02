@@ -45,3 +45,10 @@ module.exports.updateUser = async (client, user, userId) => {
 
   return await UserDAO.updateUser(client, user, userId);
 };
+
+module.exports.getUsers = async (client, filter) => {
+
+  const { rows: users } =  await UserDAO.selectUsers(client, filter);
+  return users;
+
+};

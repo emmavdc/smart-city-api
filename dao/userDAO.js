@@ -32,6 +32,14 @@ module.exports.selectUser = async (client, user) => {
         WHERE email = $1`, [user.email]);
 }
 
+module.exports.selectUsers = async (client, filter) => {
+    return await client.query(`
+        SELECT  user_id, email, firstname, lastname, phone,
+                is_admin, locality, postal_code, street_number,
+                street_name, country 
+        FROM smartcity."user"`);
+}
+
 module.exports.updateUser = async (client, user, userID) =>{
 
    await client.query(`

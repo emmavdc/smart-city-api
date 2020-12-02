@@ -42,4 +42,6 @@ router.post('/actions/addadmin', UserController.addAdminUser);
 //TODO #6 update user 
 router.put('/:id',identificationMiddleware.identification, UserController.putUser);
 
+router.get('/', identificationMiddleware.identification, UserController.getUsers);
+
 module.exports = router;

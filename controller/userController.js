@@ -198,3 +198,17 @@ module.exports.putUser = async (req, res) => {
     client.release();
   }
 };
+
+module.exports.getUsers = async (req, res) => {
+  const client = await pool.connect();
+  const filters = '';
+  try {
+    const users = await UserModel.getUsers(client, filters);
+    res.json(users);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  } finally {
+    client.release();
+  }
+};
