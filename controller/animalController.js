@@ -61,12 +61,9 @@ module.exports.getAnimals = async (req, res) => {
     const user = req.body;
   
     try {
-      await client.query("BEGIN;");
       const jwt = await AnimalModel.addAnimal(client, animal);
-      await client.query("COMMIT");
-      res.status(201).send(jwt);
+      res.status(200);
     } catch (e) {
-      await client.query("ROLLBACK;");
       console.log(e);
       res.sendStatus(500);
     } finally {
@@ -74,17 +71,14 @@ module.exports.getAnimals = async (req, res) => {
     }
   };
 
-  module.exports.updateAnimal = async (req, res) => {
+  module.exports.putAnimal = async (req, res) => {
     const client = await pool.connect();
     const user = req.body;
   
     try {
-      await client.query("BEGIN;");
-      const jwt = await AnimalModel.updateAnimal(client, animal, animal_id);
-      await client.query("COMMIT");
-      res.status(201).send(jwt);
+      const jwt = await AnimalModel.updateAnimal(client, animal, animalId);
+      res.status(201);
     } catch (e) {
-      await client.query("ROLLBACK;");
       console.log(e);
       res.sendStatus(500);
     } finally {

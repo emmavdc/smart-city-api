@@ -22,8 +22,7 @@ const identificationMiddleware = require("../middleware/identification")
 
 
 router.get('/', identificationMiddleware.identification,  AnimalController.getAnimals);
-router.post('/', identificationMiddleware.identification,  AnimalController.addAnimal);
-
-// router update
+router.post('/', identificationMiddleware.identification,  AnimalController.postAnimal);
+router.put('/', identificationMiddleware.identification,  AnimalController.putAnimal);
 
 module.exports = router;
