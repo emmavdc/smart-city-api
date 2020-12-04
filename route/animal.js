@@ -21,10 +21,8 @@ const identificationMiddleware = require("../middleware/identification")
  */
 
 
- // Encore un peu flou ça :/
-router.get('/animals/:user_id',  AnimalController.getAnimals);
-
-router.post('/',  AnimalController.addAnimal);
+router.get('/', identificationMiddleware.identification,  AnimalController.getAnimals);
+router.post('/', identificationMiddleware.identification,  AnimalController.addAnimal);
 
 // router update
 

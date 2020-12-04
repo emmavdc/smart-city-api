@@ -41,22 +41,14 @@ const AnimalModel = require("../model/animal");
  * 
  */
 
-module.exports.getAnimal = async (req, res) => {
+module.exports.getAnimals = async (req, res) => {
     const client = await pool.connect();
-    const user = req.body;
-  
-    if (user.customer != null || (!user.customer.searchWalker && !user.customer.searchHost)) {
-        res.sendStatus(400);
-        return;
-    }
+    const userId = req.session;
   
     try {
-      await client.query("BEGIN;");
-      const jwt = await AnimalModel.getAnimal(client, user_id);
-      await client.query("COMMIT");
-      res.status(201).send(jwt);
+      const animals =  AnimalModel.getAnimals(client, userId);
+      res.status(200);
     } catch (e) {
-      await client.query("ROLLBACK;");
       console.log(e);
       res.sendStatus(500);
     } finally {
@@ -64,7 +56,7 @@ module.exports.getAnimal = async (req, res) => {
     }
   };
 
-  module.exports.addAnimal = async (req, res) => {
+  module.exports.postAnimal = async (req, res) => {
     const client = await pool.connect();
     const user = req.body;
   
