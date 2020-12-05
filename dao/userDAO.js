@@ -75,8 +75,8 @@ module.exports.selectUsers = async (client, filter) => {
         AND   locality like $3`,
     [
       "%" + filter.lastname + "%",
-      "%" + filter.locality + "%",
       "%" + filter.email + "%",
+      "%" + filter.locality + "%"
     ]
   );
 };
