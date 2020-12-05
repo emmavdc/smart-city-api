@@ -201,7 +201,8 @@ module.exports.putUser = async (req, res) => {
 
 module.exports.getUsers = async (req, res) => {
   const client = await pool.connect();
-  const filters = '';
+
+  const filters = req.query;
   try {
     const users = await UserModel.getUsers(client, filters);
     res.json(users);
