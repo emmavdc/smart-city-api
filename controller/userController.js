@@ -183,21 +183,27 @@ module.exports.addAdminUser = async (req, res) => {
 
 
 module.exports.loginUser = async (req, res) => {
-  const client = await pool.connect();
-  const user = req.body;
+  const { email, password } = req.body;
 
-  try {
-    const jwt = await UserModel.loginUser(client, user);
-    if (jwt) {
-      res.status(200).send(jwt);
-    } else {
-      res.sendStatus(401);
-    }
-  } catch (e) {
-    console.log(e);
+  if (email === undefined || password === undefined) {
     res.sendStatus(500);
-  } finally {
-    client.release();
+  } else {
+    const client = await pool.connect();
+    const user = req.body;
+
+    try {
+      const jwt = await UserModel.loginUser(client, user);
+      if (jwt) {
+        res.status(200).send(jwt);
+      } else {
+        res.sendStatus(401);
+      }
+    } catch (e) {
+      console.log(e);
+      res.sendStatus(500);
+    } finally {
+      client.release();
+    }
   }
 };
 
@@ -283,7 +289,7 @@ module.exports.loginUser = async (req, res) => {
 
 module.exports.putUser = async (req, res) => {
   const client = await pool.connect();
-  const userId = req.session;
+  const userId = req.session.userId;
   const userIdParams = req.params.id;
   const user = req.body;
 

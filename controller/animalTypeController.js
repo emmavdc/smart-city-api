@@ -19,7 +19,7 @@ module.exports.getAnimalTypes = async (req, res) => {
 module.exports.postSupplierAnimal = async (req, res) => {
     const client = await pool.connect();
     const {animalTypeId} = req.body; 
-    const userId = req.session;
+    const userId = req.session.userId;
 
     try {
         await AnimalTypeModel.createSupplierAnimal(client, animalTypeId, userId);
@@ -35,7 +35,7 @@ module.exports.postSupplierAnimal = async (req, res) => {
 
 module.exports.getSupplierAnimalTypes = async (req, res) => {
     const client = await pool.connect();
-    const userId = req.session;
+    const userId = req.session.userId;
 
     try {
         const animalTypes = await AnimalTypeModel.getSupplierAnimalTypes(client,userId);
@@ -53,7 +53,7 @@ module.exports.getSupplierAnimalTypes = async (req, res) => {
 module.exports. deleteSupplierAnimal = async (req, res) => {
     const client = await pool.connect();
     const animalTypeId = req.params.id;
-    const userId = req.session;
+    const userId = req.session.userId;
 
     try{
         const rowCount = await AnimalTypeModel.deleteSupplierAnimal(client, animalTypeId,userId);

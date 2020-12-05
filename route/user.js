@@ -2,6 +2,7 @@ const UserController = require("../controller/userController");
 const Router = require("express-promise-router");
 const router = new Router;
 const identificationMiddleware = require("../middleware/identification")
+const authorizationMiddleware = require("../middleware/authorization")
 
 
 /**
@@ -78,7 +79,7 @@ router.post('/actions/addadmin', UserController.addAdminUser);
 //TODO #6 update user 
 router.put('/:id',identificationMiddleware.identification, UserController.putUser);
 
-router.get('/', identificationMiddleware.identification, UserController.getUsers);
+router.get('/', identificationMiddleware.identification, authorizationMiddleware.mustBeAdministrator, UserController.getUsers);
 //router.get('/', UserController.getUsers);
 
 module.exports = router;
