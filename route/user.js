@@ -6,15 +6,27 @@ const identificationMiddleware = require("../middleware/identification")
 
 /**
  * @swagger
- * /user:
+ * /users:
  *  post:
  *      tags:
  *          - user
  *      requestBody:
- *          $ref: '#/components/requestBodies/User'
+ *          $ref: '#/components/requestBodies/AddUser'
  *      responses:
  *          201:
  *              $ref: '#/components/responses/UserRegistered'
+ *          400:
+ *               $ref: '#/components/responses/UserNotRegistered'
+ *          500:
+ *              description: Server error
+ *  get:
+ *      tags:
+ *          - user
+ *      requestBody:
+ *          $ref: '#/components/requestBodies/GetUsers'
+ *      responses:
+ *          200:
+ *              $ref: '#/components/responses/UsersAreGet'
  *          500:
  *              description: Server error
  * 
@@ -31,6 +43,30 @@ const identificationMiddleware = require("../middleware/identification")
  *              $ref: '#/components/responses/LoginRejected'
  *          500:
  *              description: Server error
+ * 
+ * 
+ * /users/{id}:
+ *  put:
+ *      tags:
+ *          - user
+ *      parameters:
+ *          - name : id
+ *            description : User id
+ *            in: path
+ *            required: true
+ *            schema:
+ *              type: integer
+ *      requestBody:
+ *          $ref: '#/components/requestBodies/UpdateUser'
+ *      responses:
+ *          200:
+ *              $ref: '#/components/responses/UserUpdated'
+ *          403:
+ *              $ref: '#/components/responses/UserDoesNotHaveAcces'
+ *          500:
+ *              description: Server error
+ * 
+ *  
  *
  */
 

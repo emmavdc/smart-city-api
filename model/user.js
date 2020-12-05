@@ -14,7 +14,7 @@ module.exports.createUser = async (client, user) => {
     {
       email: user.email,
       userId: userId,
-      exp: Math.floor(Date.now() / 1000) + 60 * 60,
+      exp: Math.floor(Date.now() / 1000) + 60 * 60,  
     },
     process.env.SECRET
   );
@@ -28,7 +28,7 @@ module.exports.loginUser = async (client, user) => {
       return jwt.sign(
         {
           email: user.email,
-          userId: user.userId,
+          userId: users[0].user_id,
           exp: Math.floor(Date.now() / 1000) + 60 * 60,
         },
         process.env.SECRET

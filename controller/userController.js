@@ -16,9 +16,11 @@ const UserModel = require("../model/user");
  *                      properties:
  *                          error:
  *                              type: string
+ *      UserNotRegistered:
+ *           description : Invalid inputs
  *
  *  requestBodies:
- *      User:
+ *      AddUser:
  *          content:
  *              application/json:
  *                  schema:
@@ -33,9 +35,7 @@ const UserModel = require("../model/user");
  *                          lastname:
  *                              type: string
  *                          phone:
- *                              type: string
- *                          isAdmin:
- *                              type: boolean
+ *                              type: string                        
  *                          locality:
  *                              type: string
  *                          postalCode:
@@ -65,14 +65,13 @@ const UserModel = require("../model/user");
  *                                      type: boolean
  *                              required:
  *                                  - isHost
- *                                  - searchHost
+ *                                  - isAnimalWalker
  *                      required:
  *                          - email
  *                          - password
  *                          - firstname
  *                          - lastname
  *                          - phone
- *                          - isAdmin
  *                          - locality
  *                          - postalCode
  *                          - streetNumber
@@ -155,6 +154,34 @@ module.exports.addAdminUser = async (req, res) => {
   }
 };
 
+
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      LoginAccepted:
+ *          description: The user is connected
+ *      LoginRejected:
+ *          description: The user is not connected
+ *
+ *  requestBodies:
+ *      Login:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          email:
+ *                              type: string
+ *                          password:
+ *                              type: string
+ *                      required:
+ *                          - email
+ *                          - password
+ */
+
+
+
 module.exports.loginUser = async (req, res) => {
   const client = await pool.connect();
   const user = req.body;
@@ -173,6 +200,86 @@ module.exports.loginUser = async (req, res) => {
     client.release();
   }
 };
+
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      UserUpdated:
+ *          description: The user is updated
+ *      UserDoesNotHaveAcces:
+ *          description : The user does not have access
+ *
+ *  requestBodies:
+ *      UpdateUser:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          email:
+ *                              type: string
+ *                          password:
+ *                              type: string
+ *                          firstname:
+ *                              type: string
+ *                          lastname:
+ *                              type: string
+ *                          phone:
+ *                              type: string                        
+ *                          locality:
+ *                              type: string
+ *                          postalCode:
+ *                              type: integer
+ *                          streetNumber:
+ *                              type: string
+ *                          streetName:
+ *                              type: string
+ *                          country:
+ *                              type: string
+ *                          picture:
+ *                              type: string
+ *                          customer:
+ *                              type: object
+ *                              properties:
+ *                                  searchWalker:
+ *                                      type: boolean
+ *                                  searchHost:
+ *                                      type: boolean
+ *                                  commune: 
+ *                                      type: string
+ *                              required:
+ *                                  - searchWalker
+ *                                  - searchHost
+ *                          supplier:
+ *                              type: object
+ *                              properties:
+ *                                  isHost:
+ *                                      type: boolean
+ *                                  isAnimalWalker:
+ *                                      type: boolean
+ *                                  slogan:
+ *                                      type: string
+ *                                  commune:
+ *                                      type: string
+ *                                  weightMax:
+ *                                      type: integer
+ *                              required:
+ *                                  - isHost
+ *                                  - isAnimalWalker
+ *                      required:
+ *                          - email
+ *                          - password
+ *                          - firstname
+ *                          - lastname
+ *                          - phone
+ *                          - locality
+ *                          - postalCode
+ *                          - streetNumber
+ *                          - streetName
+ *                          - country
+ */
+
 
 module.exports.putUser = async (req, res) => {
   const client = await pool.connect();
@@ -198,6 +305,24 @@ module.exports.putUser = async (req, res) => {
     client.release();
   }
 };
+
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      UsersAreGet:
+ *          description: The users are obtained
+
+ *
+ *  requestBodies:
+ *      GetUsers:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ 
+ */
 
 module.exports.getUsers = async (req, res) => {
   const client = await pool.connect();
