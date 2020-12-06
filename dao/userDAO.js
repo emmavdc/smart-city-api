@@ -51,6 +51,8 @@ module.exports.selectUser = async (client, user) => {
   );
 };
 
+    
+
 module.exports.selectUsers = async (client, filter) => {
   if (!filter.lastname) {
     filter.lastname = "";

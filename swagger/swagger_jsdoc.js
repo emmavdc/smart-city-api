@@ -13,6 +13,7 @@ const options = {
     apis: [
         './controller/*',
         './route/*',
+        './middleware/*'
     ],
 };
 

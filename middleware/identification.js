@@ -1,3 +1,17 @@
+/**
+ * @swagger
+ * components:
+ *  securitySchemes:
+ *      bearerAuth:
+ *          type: http
+ *          scheme: bearer
+ *          bearerFormat: JWT
+ *  responses:
+ *      ErrorJWT:
+ *          description: JWT is not valid
+ *      MissingJWT:
+ *          description: JWT is not present
+ */
 const jwt = require('jsonwebtoken');
 
 module.exports.identification = async (req, res, next) => {
@@ -10,7 +24,7 @@ module.exports.identification = async (req, res, next) => {
             next();
         }
         else {
-            res.sendStatus(401);
+            res.sendStatus(400);
         }
     } else {
         res.sendStatus(401);

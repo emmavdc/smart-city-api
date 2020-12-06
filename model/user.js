@@ -7,6 +7,8 @@ module.exports.createUser = async (client, user) => {
   // crypt password
   user.password = bcrypt.hashSync(user.password, saltRounds);
 
+  
+
   //TODO #4 business validation
 
   const userId = await UserDAO.insertUser(client, user);
