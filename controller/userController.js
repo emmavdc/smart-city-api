@@ -6,7 +6,7 @@ const UserModel = require("../model/user");
  * components:
  *  responses:
  *      UserRegistered:
- *          description: The user is registered
+ *          description: The user is registered and received his jwt
  *      UserAlreadyExist:
  *          description: The user already exists
  *          content:
@@ -117,8 +117,15 @@ module.exports.postUser = async (req, res) => {
   try {
     await client.query("BEGIN;");
     const jwt = await UserModel.createUser(client, user);
-    await client.query("COMMIT");
-    res.status(201).send(jwt);
+    if(jwt){
+      await client.query("COMMIT");
+      res.status(201).send(jwt);
+    }
+    else{
+      await client.query("ROLLBACK");
+      res.status(409).json({error: "l'utilisateur existe déjà!"});
+    }
+    
   } catch (e) {
     await client.query("ROLLBACK;");
     console.log(e);
@@ -160,24 +167,21 @@ module.exports.addAdminUser = async (req, res) => {
  * components:
  *  responses:
  *      LoginAccepted:
- *          description: The user is connected
+ *          description: The user is connected and recieved jwt
  *      LoginRejected:
- *          description: The user is not connected
+ *          description: The user is not connected because of bad email/password
  *
- *  requestBodies:
+ *  schemas:
  *      Login:
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
- *                      properties:
- *                          email:
- *                              type: string
- *                          password:
- *                              type: string
- *                      required:
- *                          - email
- *                          - password
+ *          type: object
+ *          properties:
+ *              email:
+ *                  type: string
+ *              password:
+ *                  type: string
+ *          required:
+ *                  - email
+ *                  - password
  */
 
 
@@ -316,18 +320,11 @@ module.exports.putUser = async (req, res) => {
  * @swagger
  * components:
  *  responses:
- *      UsersAreGet:
- *          description: The users are obtained
-
+ *      UsersAreFound:
+ *          description: The users are returned
+ *      UserAreNotFound:
+ *          description : Thee users are not obtained
  *
- *  requestBodies:
- *      GetUsers:
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
- *                      properties:
- 
  */
 
 module.exports.getUsers = async (req, res) => {
