@@ -66,17 +66,21 @@ module.exports.selectUsers = async (client, filter) => {
 
   return await client.query(
     `
-        SELECT  user_id, email, firstname, lastname, phone,
-                is_admin, locality, postal_code, street_number,
-                street_name, country 
-        FROM smartcity."user"
-        WHERE lastname like $1
+    SELECT  smartcity."user".user_id, email, firstname, lastname,
+    locality,
+    case when customer_id is null then false else true end as iscustomer,
+    case when supplier_id is null then false else true end as issupplier
+    FROM smartcity."user"
+    LEFT OUTER JOIN smartcity."customer" ON smartcity."user".user_id = smartcity."customer".user_id
+    LEFT OUTER JOIN smartcity."supplier" ON smartcity."user".user_id = smartcity."supplier".user_id
+    WHERE is_admin = false
+        AND   lastname like $1
         AND   email like $2
         AND   locality like $3`,
     [
       "%" + filter.lastname + "%",
       "%" + filter.email + "%",
-      "%" + filter.locality + "%"
+      "%" + filter.locality + "%",
     ]
   );
 };
