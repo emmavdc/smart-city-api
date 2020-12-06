@@ -117,8 +117,15 @@ module.exports.postUser = async (req, res) => {
   try {
     await client.query("BEGIN;");
     const jwt = await UserModel.createUser(client, user);
-    await client.query("COMMIT");
-    res.status(201).send(jwt);
+    if(jwt){
+      await client.query("COMMIT");
+      res.status(201).send(jwt);
+    }
+    else{
+      await client.query("ROLLBACK");
+      res.status(409).json({error: "l'utilisateur existe déjà!"});
+    }
+    
   } catch (e) {
     await client.query("ROLLBACK;");
     console.log(e);
