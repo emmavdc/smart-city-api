@@ -19,16 +19,10 @@ const authorizationMiddleware = require("../middleware/authorization")
  *              $ref: '#/components/responses/UserRegistered'
  *          400:
  *               $ref: '#/components/responses/UserNotRegistered'
+ *          409:
+ *               $ref: '#/components/responses/UserAlreadyExist'
  *          500:
  *              description: Server error
- * 
- * 
- * 
- * 
- * 
- 
- *  
- *
  */
 
 router.post('/',  UserController.postUser);

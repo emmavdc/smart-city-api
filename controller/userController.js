@@ -9,13 +9,6 @@ const UserModel = require("../model/user");
  *          description: The user is registered and received his jwt
  *      UserAlreadyExist:
  *          description: The user already exists
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
- *                      properties:
- *                          error:
- *                              type: string
  *      UserNotRegistered:
  *           description : Invalid inputs
  *
