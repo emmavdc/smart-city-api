@@ -58,7 +58,7 @@ module.exports.getAnimals = async (req, res) => {
 
   module.exports.postAnimal = async (req, res) => {
     const client = await pool.connect();
-    const user = req.body;
+    const animal = req.body;
   
     try {
       const jwt = await AnimalModel.addAnimal(client, animal);
@@ -73,11 +73,27 @@ module.exports.getAnimals = async (req, res) => {
 
   module.exports.putAnimal = async (req, res) => {
     const client = await pool.connect();
-    const user = req.body;
+    const animal = req.body;
+    const animalId = req.body;
   
     try {
       const jwt = await AnimalModel.updateAnimal(client, animal, animalId);
       res.status(201);
+    } catch (e) {
+      console.log(e);
+      res.sendStatus(500);
+    } finally {
+      client.release();
+    }
+  };
+
+  module.exports.deleteAnimal = async (req, res) => {
+    const client = await pool.connect();
+    const animalId = req.body;
+  
+    try {
+      const jwt = await AnimalModel.deleteAnimal(client, animalId);
+      res.status(200);
     } catch (e) {
       console.log(e);
       res.sendStatus(500);

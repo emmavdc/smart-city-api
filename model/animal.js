@@ -1,6 +1,5 @@
 const AnimalDAO = require("../dao/animalDAO");
 
-
 module.exports.getAnimals = async (client, userId) => {
   
     const {rows : animals} = await AnimalDAO.selectAnimals(client, userId);
@@ -13,7 +12,12 @@ module.exports.getAnimals = async (client, userId) => {
     
   };
 
-  module.exports.updateUser = async (client, animal, animalId) => {
+  module.exports.updateAnimal = async (client, animal, animalId) => {
   
     return await AnimalDAO.updateAnimal(client, animal, animalId);
+  };
+
+  module.exports.deleteAnimal = async (client, animalId) => {
+  
+    return await AnimalDAO.deleteAnimal(client, animalId);
   };

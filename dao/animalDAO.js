@@ -13,8 +13,6 @@ module.exports.selectAnimals = async (client, userId) => {
         return animals;
 }
 
-
-
 module.exports.insertAnimal = async (client, animal) => {
 
     return await client.query(`
@@ -33,3 +31,10 @@ module.exports.updateAnimal = async (client, animal, animalId) => {
                              [animal.breed, animal.review, animal.weight, animal.name, 
                                  animal.customerId, animal.animalTypeId, animalId]);
  }
+
+ module.exports.deleteAnimal = async (client, animalId) => {
+
+    return await client.query(`
+        DELETE FROM smartcity."animal" WHERE animal_id = $1`, [animalId]
+    );
+}
