@@ -144,3 +144,11 @@ module.exports.updateUser = async (client, user, userID) => {
 
   return;
 };
+
+module.exports.deleteUser = async (client, userId) => {
+  const {rowCount} = await client.query(`
+  DELETE FROM smartcity."user"
+  WHERE user_id = $1`, [userId]);
+
+  return rowCount;
+};

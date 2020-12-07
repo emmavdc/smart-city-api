@@ -334,3 +334,36 @@ module.exports.getUsers = async (req, res) => {
     client.release();
   }
 };
+
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      UserDeleted:
+ *          description: The user is deleted
+ *      UserNotDeleted:
+ *          description : The user is not found
+ *
+ */
+
+module.exports.deleteUser = async (req, res) => {
+  const client = await pool.connect();
+  const userId = req.params.id;
+
+  try {
+    const rowCount = await UserModel.deleteUser(client, userId);
+    if(rowCount == 1){
+      res.sendStatus(200);
+    }
+    else{
+      res.sendStatus(404);
+    }
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+  finally{
+    client.release();
+  }
+  
+};

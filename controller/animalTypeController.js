@@ -2,6 +2,17 @@ const pool = require("../utils/database");
 const AnimalTypeModel = require("../model/animalType");
 
 
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      AnimalTypesAreFound:
+ *          description: The animal types are returned
+ *      AnimalTypesAreNotFound:
+ *          description : The animal types are not obtained
+ *
+ */
+
 module.exports.getAnimalTypes = async (req, res) => {
     const client = await pool.connect();
 
@@ -16,6 +27,28 @@ module.exports.getAnimalTypes = async (req, res) => {
         client.release();
     }
 };
+
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      UserAnimaltypeAdded:
+ *          description: The supplier animal type is added
+ * 
+ *  requestBodies:
+ *      UserAnimaltype:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          animalTypeId:
+ *                              type: integer
+ *                      required:
+ *                          -  animalTypeId
+ */
+
+
 module.exports.postSupplierAnimal = async (req, res) => {
     const client = await pool.connect();
     const {animalTypeId} = req.body; 
@@ -33,6 +66,14 @@ module.exports.postSupplierAnimal = async (req, res) => {
     }
 };
 
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      SupplierAnimalTypesAreFound:
+ *          description: The supplier animal types are returned
+ */
+
 module.exports.getSupplierAnimalTypes = async (req, res) => {
     const client = await pool.connect();
     const userId = req.session.userId;
@@ -49,6 +90,16 @@ module.exports.getSupplierAnimalTypes = async (req, res) => {
     }
 };
 
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      UserAnimaltypeDeleted:
+ *          description: The supplier animal type is deleted
+ *      UserAnimaltypeNotDeleted:
+ *          description: The supplier animal type id is not found 
+ */
+
 
 module.exports. deleteSupplierAnimal = async (req, res) => {
     const client = await pool.connect();
@@ -58,7 +109,7 @@ module.exports. deleteSupplierAnimal = async (req, res) => {
     try{
         const rowCount = await AnimalTypeModel.deleteSupplierAnimal(client, animalTypeId,userId);
         if(rowCount != 0){
-            res.sendStatus(204);
+            res.sendStatus(200);
         }
         else{
             res.sendStatus(403);

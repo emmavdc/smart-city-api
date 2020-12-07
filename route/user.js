@@ -117,4 +117,38 @@ router.put('/:id',identificationMiddleware.identification, UserController.putUse
 
 router.get('/', identificationMiddleware.identification, authorizationMiddleware.mustBeAdministrator, UserController.getUsers);
 
+/**
+ * @swagger
+ * /users/{id}:
+ *  delete:
+ *      tags:
+ *          - user
+ *      description: Delete user
+ *      security:
+ *          - bearerAuth: []
+ *      parameters:
+ *          - name : id
+ *            description : User id
+ *            in: path
+ *            required: true
+ *            schema:
+ *              type: integer
+ *      responses:
+ *          200:
+ *              $ref: '#/components/responses/UserDeleted'
+ *          400:
+ *              $ref: '#/components/responses/ErrorJWT'
+ *          401:
+ *              $ref: '#/components/responses/MissingJWT'
+ *          403:
+ *              $ref: '#/components/responses/mustBeAdministrator'
+ *          404:
+ *              $ref: '#/components/responses/UserNotDeleted'
+ *          500:
+ *              description: Server error
+ *
+ */
+
+router.delete('/:id', identificationMiddleware.identification, authorizationMiddleware.mustBeAdministrator, UserController.deleteUser);
+
 module.exports = router;
