@@ -28,7 +28,7 @@ const UserModel = require("../model/user");
  *                          lastname:
  *                              type: string
  *                          phone:
- *                              type: string                        
+ *                              type: string
  *                          locality:
  *                              type: string
  *                          postalCode:
@@ -70,7 +70,7 @@ const UserModel = require("../model/user");
  *                          - streetNumber
  *                          - streetName
  *                          - country
- * 
+ *
  */
 
 module.exports.postUser = async (req, res) => {
@@ -110,15 +110,13 @@ module.exports.postUser = async (req, res) => {
   try {
     await client.query("BEGIN;");
     const jwt = await UserModel.createUser(client, user);
-    if(jwt){
+    if (jwt) {
       await client.query("COMMIT");
       res.status(201).send(jwt);
-    }
-    else{
+    } else {
       await client.query("ROLLBACK");
-      res.status(409).json({error: "l'utilisateur existe déjà!"});
+      res.status(409).json({ error: "l'utilisateur existe déjà!" });
     }
-    
   } catch (e) {
     await client.query("ROLLBACK;");
     console.log(e);
@@ -129,10 +127,8 @@ module.exports.postUser = async (req, res) => {
 };
 
 module.exports.addAdminUser = async (req, res) => {
-
-    const user = req.body;
-    if (user.secret == process.env.CREATE_ADMIN_SECRET) {
- 
+  const user = req.body;
+  if (user.secret == process.env.CREATE_ADMIN_SECRET) {
     const client = await pool.connect();
     user.isAdmin = true;
 
@@ -148,12 +144,10 @@ module.exports.addAdminUser = async (req, res) => {
     } finally {
       client.release();
     }
-  }
-  else {
+  } else {
     res.sendStatus(401);
   }
 };
-
 
 /**
  * @swagger
@@ -177,13 +171,11 @@ module.exports.addAdminUser = async (req, res) => {
  *                  - password
  */
 
-
-
 module.exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   if (email === undefined || password === undefined) {
-    res.sendStatus(500);
+    res.sendStatus(400);
   } else {
     const client = await pool.connect();
     const user = req.body;
@@ -229,7 +221,7 @@ module.exports.loginUser = async (req, res) => {
  *                          lastname:
  *                              type: string
  *                          phone:
- *                              type: string                        
+ *                              type: string
  *                          locality:
  *                              type: string
  *                          postalCode:
@@ -249,7 +241,7 @@ module.exports.loginUser = async (req, res) => {
  *                                      type: boolean
  *                                  searchHost:
  *                                      type: boolean
- *                                  commune: 
+ *                                  commune:
  *                                      type: string
  *                              required:
  *                                  - searchWalker
@@ -283,14 +275,14 @@ module.exports.loginUser = async (req, res) => {
  *                          - country
  */
 
-
 module.exports.putUser = async (req, res) => {
   const client = await pool.connect();
   const userId = req.session.userId;
+  const isAdmin = req.session.isAdmin;
   const userIdParams = req.params.id;
   const user = req.body;
 
-  if (Number(userId) !== Number(userIdParams)) {
+  if (isAdmin || Number(userId) !== Number(userIdParams)) {
     res.sendStatus(403);
     return;
   }
@@ -352,18 +344,56 @@ module.exports.deleteUser = async (req, res) => {
 
   try {
     const rowCount = await UserModel.deleteUser(client, userId);
-    if(rowCount == 1){
+    if (rowCount == 1) {
       res.sendStatus(200);
-    }
-    else{
+    } else {
       res.sendStatus(404);
     }
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
-  }
-  finally{
+  } finally {
     client.release();
   }
-  
+};
+
+module.exports.addUserByAdmin = async (req, res) => {
+  const user = req.body;
+
+  if (
+    user.email === undefined ||
+    user.password === undefined ||
+    user.firstname === undefined ||
+    user.lastname === undefined ||
+    user.locality === undefined ||
+    user.postalCode === undefined ||
+    user.streetNumber === undefined ||
+    user.streetName === undefined ||
+    user.country === undefined
+  ) {
+    res.sendStatus(400);
+    return;
+  }
+
+  if (!user.isAdmin) user.isAdmin = false;
+
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN;");
+    const jwt = await UserModel.createUser(client, user);
+    if (jwt) {
+      await client.query("COMMIT");
+      res.sendStatus(201);
+    } else {
+      await client.query("ROLLBACK");
+      res.status(409).json({ error: "l'utilisateur existe déjà!" });
+    }
+  } catch (e) {
+    await client.query("ROLLBACK;");
+    console.log(e);
+    res.sendStatus(500);
+  } finally {
+    client.release();
+  }
 };

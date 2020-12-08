@@ -151,4 +151,6 @@ router.get('/', identificationMiddleware.identification, authorizationMiddleware
 
 router.delete('/:id', identificationMiddleware.identification, authorizationMiddleware.mustBeAdministrator, UserController.deleteUser);
 
+router.post('/actions/addbyadmin',identificationMiddleware.identification, authorizationMiddleware.mustBeAdministrator, UserController.addUserByAdmin);
+
 module.exports = router;
