@@ -1,7 +1,7 @@
 const AbsenceController = require("../controller/absenceController");
 const Router = require("express-promise-router");
 const router = new Router;
-const identificationMiddleware = require("../middleware/identification")
+const identificationMiddleware = require("../middleware/identification");
 
 
 /**
