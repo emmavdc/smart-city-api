@@ -51,6 +51,28 @@ module.exports.selectUser = async (client, user) => {
   );
 };
 
+module.exports.selectCustomer = async(client, userId) =>{
+    const {rows : customer} = await client.query(`
+    SELECT c.customer_id
+    FROM smartcity."customer" c , smartcity."user" u
+    WHERE u.user_id = c.user_id
+    AND u.user_id = $1`, [userId]);
+
+    return customer;
+};
+
+module.exports.selectSupplierByEmail = async(client, email) =>{
+  const {rows : supplier} = await client.query(`
+  SELECT s.supplier_id
+    FROM  smartcity."supplier" s, smartcity."user" u
+    WHERE u.user_id = s.user_id
+    AND u.user_id =
+        (SELECT us.user_id
+            FROM smartcity."user" us
+            WHERE email = $1)`[email]);
+  return supplier;
+};
+
     
 
 module.exports.selectUsers = async (client, filter) => {
