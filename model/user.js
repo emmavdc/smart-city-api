@@ -17,14 +17,20 @@ module.exports.createUser = async (client, user) => {
   }
 
   const userId = await UserDAO.insertUser(client, user);
+
+  const expiresIn = "1y";
+
   return jwt.sign(
     {
       email: user.email,
-      userId: userId,
-      exp: Math.floor(Date.now() / 1000) + 60 * 60,
+      userId: userId
     },
-    process.env.SECRET
+    process.env.SECRET, {
+      expiresIn: expiresIn
+    }
   );
+
+  
 };
 
 module.exports.loginUser = async (client, user) => {
@@ -47,7 +53,7 @@ module.exports.loginUser = async (client, user) => {
           };
 
       return jwt.sign(payload, process.env.SECRET, {
-        expiresIn: expiresIn,
+        expiresIn: expiresIn
       });
     }
   }
