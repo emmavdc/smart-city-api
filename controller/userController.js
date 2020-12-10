@@ -361,15 +361,15 @@ module.exports.addUserByAdmin = async (req, res) => {
   const user = req.body;
 
   if (
-    user.email === undefined ||
-    user.password === undefined ||
-    user.firstname === undefined ||
-    user.lastname === undefined ||
-    user.locality === undefined ||
-    user.postalCode === undefined ||
-    user.streetNumber === undefined ||
-    user.streetName === undefined ||
-    user.country === undefined
+    !user.email ||
+    !user.password ||
+    !user.firstname ||
+    !user.lastname ||
+    !user.locality ||
+    !user.postalCode ||
+    !user.streetNumber ||
+    !user.streetName ||
+    !user.country
   ) {
     res.sendStatus(400);
     return;
