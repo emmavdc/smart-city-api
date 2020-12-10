@@ -7,8 +7,7 @@ module.exports.insertAbsence = async(client, absence, userId) =>{
 
     return await client.query(`
     INSERT INTO smartcity."absence"(date, supplier_id) 
-    VALUES($1,$2)`, [absence.date, supplier[0].supplier_id]);
-
+    VALUES($1,$2)`,[absence.date, supplier[0].supplier_id]);
 };
 
 module.exports.deleteAbsence = async(client, absence_id,userId) =>{
@@ -33,7 +32,7 @@ module.exports.selectAbsences = async(client,userId) =>{
     AND u.user_id = $1`, [userId]);
 
    return await client.query(`
-    SELECT *
+    SELECT to_char(date,'DD-MM-YYYY'), absence_id
     FROM smartcity."absence" 
     WHERE supplier_id = $1`, [supplier[0].supplier_id]);
 };

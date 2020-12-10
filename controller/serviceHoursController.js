@@ -1,5 +1,6 @@
 const pool = require("../utils/database");
 const ServiceHoursModel = require("../model/serviceHours");
+const e = require("express");
 
 
 module.exports.postServiceHours = async(req, res) =>{
@@ -14,11 +15,10 @@ module.exports.postServiceHours = async(req, res) =>{
         res.sendStatus(201);
     } catch (error) {
         await client.query("ROLLBACK;");
+        console.log(error);
         res.sendStatus(500);
         
     }finally{
         client.release();
     }
-
-
 };

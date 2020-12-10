@@ -69,7 +69,7 @@ module.exports.selectSupplierByEmail = async(client, email) =>{
     AND u.user_id =
         (SELECT us.user_id
             FROM smartcity."user" us
-            WHERE email = $1)`[email]);
+            WHERE email = $1)`,[email]);
   return supplier;
 };
 
