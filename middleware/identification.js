@@ -7,8 +7,6 @@
  *          scheme: bearer
  *          bearerFormat: JWT
  *  responses:
- *      ErrorJWT:
- *          description: JWT is not valid
  *      MissingJWT:
  *          description: JWT is not present
  */

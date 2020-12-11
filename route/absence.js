@@ -19,7 +19,7 @@ const identificationMiddleware = require("../middleware/identification");
  *          201:
  *              $ref: '#/components/responses/AbsenceAdded'
  *          400:
- *              $ref: '#/components/responses/ErrorJWT'
+ *               description: Bad request
  *          401:
  *              $ref: '#/components/responses/MissingJWT'
  *          500:
@@ -48,7 +48,7 @@ router.post('/', identificationMiddleware.identification, AbsenceController.post
  *          200:
  *              $ref: '#/components/responses/AbsenceDeleted'
  *          400:
- *              $ref: '#/components/responses/ErrorJWT'
+ *               description: Bad request
  *          401:
  *              $ref: '#/components/responses/MissingJWT'
  *          500:
@@ -67,9 +67,11 @@ router.delete('/:id', identificationMiddleware.identification, AbsenceController
  *      description: Get absences of a user
  *      responses:
  *          400:
- *               $ref: '#/components/responses/UserNotRegistered'
- *          409:
- *               $ref: '#/components/responses/UserAlreadyExist'
+ *              description: Bad request
+ *          401:
+ *              $ref: '#/components/responses/MissingJWT'
+ *          200:
+ *               $ref: '#/components/responses/AbsencesReturned'
  *          500:
  *              description: Server error
  */

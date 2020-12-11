@@ -363,6 +363,79 @@ module.exports.deleteUser = async (req, res) => {
   }
 };
 
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      UserRegisteredByAdmin:
+ *          description: The user is registered
+ *      UserAlreadyExist:
+ *          description: The user already exists
+ *      UserNotRegisteredByAdmin:
+ *           description : Invalid inputs
+ *
+ *  requestBodies:
+ *      AddUserByAdmin:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          email:
+ *                              type: string
+ *                          password:
+ *                              type: string
+ *                          firstname:
+ *                              type: string
+ *                          lastname:
+ *                              type: string
+ *                          phone:
+ *                              type: string
+ *                          locality:
+ *                              type: string
+ *                          postalCode:
+ *                              type: integer
+ *                          streetNumber:
+ *                              type: string
+ *                          streetName:
+ *                              type: string
+ *                          country:
+ *                              type: string
+ *                          customer:
+ *                              type: object
+ *                              properties:
+ *                                  searchWalker:
+ *                                      type: boolean
+ *                                  searchHost:
+ *                                      type: boolean
+ *                              required:
+ *                                  - searchWalker
+ *                                  - searchHost
+ *                          supplier:
+ *                              type: object
+ *                              properties:
+ *                                  isHost:
+ *                                      type: boolean
+ *                                  isAnimalWalker:
+ *                                      type: boolean
+ *                              required:
+ *                                  - isHost
+ *                                  - isAnimalWalker
+ *                      required:
+ *                          - email
+ *                          - password
+ *                          - firstname
+ *                          - lastname
+ *                          - phone
+ *                          - locality
+ *                          - postalCode
+ *                          - streetNumber
+ *                          - streetName
+ *                          - country
+ *
+ */
+
+
 module.exports.addUserByAdmin = async (req, res) => {
   const user = req.body;
 

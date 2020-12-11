@@ -16,7 +16,7 @@ const identificationMiddleware = require("../middleware/identification")
  *          200:
  *              $ref: '#/components/responses/AnimalTypesAreFound'
  *          400:
- *              $ref: '#/components/responses/ErrorJWT'
+ *              description: Bad request
  *          401:
  *              $ref: '#/components/responses/MissingJWT'
  *          500:
@@ -38,7 +38,7 @@ router.get('/',identificationMiddleware.identification,AnimalTypeController.getA
  *          200:
  *              $ref: '#/components/responses/SupplierAnimalTypesAreFound'
  *          400:
- *              $ref: '#/components/responses/ErrorJWT'
+ *              description: Bad request
  *          401:
  *              $ref: '#/components/responses/MissingJWT'
  *          500:
@@ -62,7 +62,7 @@ router.get('/supplier',identificationMiddleware.identification,AnimalTypeControl
  *          201:
  *              $ref: '#/components/responses/UserAnimaltypeAdded'
  *          400:
- *              $ref: '#/components/responses/ErrorJWT'
+ *              description: Bad request
  *          401:
  *              $ref: '#/components/responses/MissingJWT'
  *          500:
@@ -93,7 +93,7 @@ router.post('/supplier', identificationMiddleware.identification, AnimalTypeCont
  *          200:
  *              $ref: '#/components/responses/UserAnimaltypeDeleted'
  *          400:
- *              $ref: '#/components/responses/ErrorJWT'
+ *              description: Bad request
  *          401:
  *              $ref: '#/components/responses/MissingJWT'
  *          403:

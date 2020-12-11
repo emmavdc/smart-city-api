@@ -77,7 +77,7 @@ router.post('/actions/addadmin', UserController.addAdminUser);
  *          200:
  *              $ref: '#/components/responses/UserUpdated'
  *          400:
- *              $ref: '#/components/responses/ErrorJWT'
+ *              description: Bad request
  *          401:
  *              $ref: '#/components/responses/MissingJWT'
  *          403:
@@ -104,7 +104,7 @@ router.put('/:id',identificationMiddleware.identification, UserController.putUse
  *          200:
  *              $ref: '#/components/responses/UsersAreFound'
  *          400:
- *              $ref: '#/components/responses/ErrorJWT'
+ *              description: Bad request
  *          401:
  *              $ref: '#/components/responses/MissingJWT'
  *          403:
@@ -137,7 +137,7 @@ router.get('/', identificationMiddleware.identification, authorizationMiddleware
  *          200:
  *              $ref: '#/components/responses/UserDeleted'
  *          400:
- *              $ref: '#/components/responses/ErrorJWT'
+ *              description: Bad request
  *          401:
  *              $ref: '#/components/responses/MissingJWT'
  *          403:
@@ -150,6 +150,34 @@ router.get('/', identificationMiddleware.identification, authorizationMiddleware
  */
 
 router.delete('/:id', identificationMiddleware.identification, authorizationMiddleware.mustBeAdministrator, UserController.deleteUser);
+
+/**
+ * @swagger
+ * /users/actions/addbyadmin:
+ *  post:
+ *      tags:
+ *          - user
+ *      description: Create new user as an administrator
+ *      security:
+ *          - bearerAuth: []
+ *      requestBody:
+ *          $ref: '#/components/requestBodies/AddUserByAdmin'
+ *      responses:
+ *          201:
+ *              $ref: '#/components/responses/UserRegisteredByAdmin'
+ *          400:
+ *              description: Bad request
+ *          401:
+ *              $ref: '#/components/responses/MissingJWT'
+ *          403:
+ *              $ref: '#/components/responses/mustBeAdministrator'
+ *          409:
+ *               $ref: '#/components/responses/UserAlreadyExist'
+ *          500:
+ *              description: Server error
+ */
+
+
 
 router.post('/actions/addbyadmin',identificationMiddleware.identification, authorizationMiddleware.mustBeAdministrator, UserController.addUserByAdmin);
 
