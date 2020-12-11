@@ -24,6 +24,8 @@ module.exports.insertUser = async (client, user) => {
         INSERT INTO smartcity."customer"(search_walker, search_host, user_id) 
         VALUES ($1, $2, $3)`,
       [user.customer.searchWalker, user.customer.searchHost, newUser[0].user_id]
+
+      
     );
   }
 

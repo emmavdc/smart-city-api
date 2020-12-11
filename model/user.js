@@ -8,29 +8,14 @@ module.exports.createUser = async (client, user) => {
   // crypt password
   user.password = bcrypt.hashSync(user.password, saltRounds);
 
-  //TODO #4 business validation
-
   // if user already exist
   const { rows: users } = await UserDAO.selectUser(client, user);
   if (users[0]) {
     return null;
   }
 
-  const userId = await UserDAO.insertUser(client, user);
-
-  const expiresIn = "1y";
-
-  return jwt.sign(
-    {
-      email: user.email,
-      userId: userId
-    },
-    process.env.SECRET, {
-      expiresIn: expiresIn
-    }
-  );
-
-  
+  return await UserDAO.insertUser(client, user);
+ 
 };
 
 module.exports.loginUser = async (client, user) => {

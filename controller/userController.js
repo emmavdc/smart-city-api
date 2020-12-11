@@ -77,15 +77,8 @@ module.exports.postUser = async (req, res) => {
   const client = await pool.connect();
   const user = req.body;
 
-  //TODO #5 validate type
-
   // a user is never an admin
   user.isAdmin = false;
-
-  /*if(typeof user.postalCode !== "integer"){
-        res.sendStatus(400);
-        return;
-    }*/
 
   if (user.customer != null) {
     if (
@@ -109,8 +102,21 @@ module.exports.postUser = async (req, res) => {
 
   try {
     await client.query("BEGIN;");
-    const jwt = await UserModel.createUser(client, user);
-    if (jwt) {
+    const userId = await UserModel.createUser(client, user);
+    if (userId) {
+
+      const expiresIn = "1y";
+
+      const jwt = jwt.sign(
+        {
+          email: user.email,
+          userId: userId
+        },
+        process.env.SECRET, {
+          expiresIn: expiresIn
+        }
+      );
+
       await client.query("COMMIT");
       res.status(201).send(jwt);
     } else {
@@ -134,9 +140,9 @@ module.exports.addAdminUser = async (req, res) => {
 
     try {
       await client.query("BEGIN;");
-      const jwt = await UserModel.createUser(client, user);
+      await UserModel.createUser(client, user);
       await client.query("COMMIT");
-      res.status(201).send(jwt);
+      res.sendStatus(201);
     } catch (e) {
       await client.query("ROLLBACK;");
       console.log(e);
@@ -381,13 +387,13 @@ module.exports.addUserByAdmin = async (req, res) => {
 
   try {
     await client.query("BEGIN;");
-    const jwt = await UserModel.createUser(client, user);
-    if (jwt) {
+    const userId = await UserModel.createUser(client, user);
+    if (userId) {
       await client.query("COMMIT");
       res.sendStatus(201);
     } else {
       await client.query("ROLLBACK");
-      res.status(409).json({ error: "l'utilisateur existe déjà!" });
+      res.status(409).json({ error: "The user already exists!" });
     }
   } catch (e) {
     await client.query("ROLLBACK;");
