@@ -371,6 +371,7 @@ module.exports.addUserByAdmin = async (req, res) => {
     !user.password ||
     !user.firstname ||
     !user.lastname ||
+    !user.phone ||
     !user.locality ||
     !user.postalCode ||
     !user.streetNumber ||
