@@ -26,10 +26,32 @@ module.exports.insertAnimal = async(client,animal, userId) =>{
          animal.animalTypeId]);
 };
 
+module.exports.updateAnimal = async(client, animal, animalId, userId) =>{
+    const customer = await UserDAO.selectCustomer(client, userId);
+
+    return await client.query(`
+    UPDATE smartcity."animal" SET breed = $1,
+    review = $2, 
+    weight = $3, 
+    name = $4, 
+    animal_type_id =$5
+    WHERE animal_id = $6
+    AND customer_id = $7`, 
+    [
+        animal.breed,
+        animal.review,
+        animal.weight,
+        animal.name,
+        animal.animalTypeId,
+        animalId,
+        customer[0].customer_id
+    ]);
+};
+
 module.exports.deleteAnimal = async(client, animalId, userId) =>{
     const customer = await UserDAO.selectCustomer(client, userId);
     
     return await client.query(`
     DELETE FROM smartcity."animal"
-     WHERE animal_type = $1 AND supplier_id = $2`,[animalId,customer[0].customer_id]);
+     WHERE animal_id = $1 AND customer_id = $2`,[animalId,customer[0].customer_id]);
 };

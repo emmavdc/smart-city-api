@@ -29,13 +29,34 @@ module.exports.postAnimal = async(req, res) =>{
         res.sendStatus(201);
         
     } catch (error) {
-        console.log(e);
-        res.sendStatus(201);
+        console.log(error);
+        res.sendStatus(500);
         
     }finally{
         client.release(); 
     }
 };
+
+module.exports.putAnimal = async(req, res) =>{
+    const client = await pool.connect();
+    const userId = req.session.userId;
+    const animal = req.body;
+    const animalId = req.params.id;
+
+    try {
+        await AnimalModel.updateAnimal(client, animal, animalId, userId);
+        res.sendStatus(201);
+        
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+        
+    }finally{
+        client.release(); 
+    }
+};
+
+
 
 module.exports.deleteAnimal = async(req, res) =>{
     const client = await pool.connect();
