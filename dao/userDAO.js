@@ -61,6 +61,17 @@ module.exports.selectCustomer = async(client, userId) =>{
     return customer;
 };
 
+module.exports.selectSupplier = async(client, userId) =>{
+    const {rows : supplier} = await client.query(`
+    SELECT s.supplier_id
+    FROM smartcity."supplier" s, smartcity."user" u
+    WHERE u.user_id = s.user_id
+    AND u.user_id = $1`, [userId]);
+
+    return supplier;
+
+};
+
 module.exports.selectSupplierByEmail = async(client, email) =>{
   const {rows : supplier} = await client.query(`
   SELECT s.supplier_id

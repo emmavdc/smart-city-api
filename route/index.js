@@ -9,7 +9,7 @@ router.use("/users", UserRouter);
 router.use("/absences", AbsenceRouter);
 router.use("/animalTypes", AnimalTypeRouter);
 router.use("/animals", AnimalRouter);
-router.use("/serviceHours", ServiceHoursRouter);
+router.use("/servicesHours", ServiceHoursRouter);
 
 module.exports = router;
 
