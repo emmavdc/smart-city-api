@@ -1,5 +1,6 @@
 const pool = require("../utils/database");
 const UserModel = require("../model/user");
+const jwt = require("jsonwebtoken");
 
 /**
  * @swagger
@@ -107,7 +108,7 @@ module.exports.postUser = async (req, res) => {
 
       const expiresIn = "1y";
 
-      const jwt = jwt.sign(
+      const token = jwt.sign(
         {
           email: user.email,
           userId: userId
@@ -118,7 +119,7 @@ module.exports.postUser = async (req, res) => {
       );
 
       await client.query("COMMIT");
-      res.status(201).send(jwt);
+      res.status(201).send(token);
     } else {
       await client.query("ROLLBACK");
       res.status(409).json({ error: "l'utilisateur existe déjà!" });

@@ -1,3 +1,4 @@
+const router = require("../route/serviceHours");
 const UserDAO = require("./userDAO");
 
 module.exports.insertServicesHours = async (client, serviceHours, userId) => {
@@ -5,7 +6,7 @@ module.exports.insertServicesHours = async (client, serviceHours, userId) => {
     const customer = await UserDAO.selectCustomer(client, userId);
     const supplier = await UserDAO.selectSupplierByEmail(client, serviceHours.emailSupplier);
 
-     await client.query(`
+    const {rowCount} = await client.query(`
     INSERT INTO smartcity."service_hours" (start_date_time, end_date_time,
         type, description_demande, status,animal_id, customer_id, supplier_id)
     SELECT $1,
@@ -18,10 +19,16 @@ module.exports.insertServicesHours = async (client, serviceHours, userId) => {
           $8
     WHERE NOT EXISTS
     (SELECT *
-       FROM smartcity."service_hours"
-       WHERE type = $9
-       AND start_date_time <=  TO_DATE($10, 'yyyy-mm-dd HH24:MI:SS')
-       AND end_date_time >=  TO_DATE($11, 'yyyy-mm-dd HH24:MI:SS'))`,
+        FROM smartcity."service_hours"
+        WHERE type = $9
+        AND (to_date($10, 'yyyy-mm-dd HH24:MI:SS') BETWEEN  start_date_time and end_date_time)
+        AND (to_date($11, 'yyyy-mm-dd HH24:MI:SS') BETWEEN  start_date_time and end_date_time))
+    AND NOT EXISTS(
+        SELECT *
+        FROM smartcity."absence"
+        WHERE date BETWEEN to_date($12, 'yyyy-mm-dd HH24:MI:SS') 
+            and to_date($13, 'yyyy-mm-dd HH24:MI:SS')
+    )`,
         [serviceHours.startDateTime,
         serviceHours.endDateTime,
         serviceHours.type,
@@ -32,9 +39,11 @@ module.exports.insertServicesHours = async (client, serviceHours, userId) => {
         supplier[0].supplier_id,
         serviceHours.type,
         serviceHours.startDateTime,
+        serviceHours.endDateTime,
+        serviceHours.startDateTime,
         serviceHours.endDateTime]);
     
-        return;
+        return rowCount;
 };
 
 module.exports.updateServiceHours = async(client, serviceHoursId, serviceHours, userId) =>{
@@ -53,6 +62,7 @@ module.exports.updateServiceHours = async(client, serviceHoursId, serviceHours, 
         serviceHoursId
     ]);
 };
+
 
 module.exports.selectServicesHoursAsACustomer = async(client, userId) =>{
     const customer = await UserDAO.selectCustomer(client, userId);
@@ -113,4 +123,16 @@ module.exports.selectServicesHoursAsASupplier = async(client, userId) =>{
     AND sh.animal_id = a.animal_id
     AND a.animal_type_id = at.animal_type_id
     AND sh.supplier_id = $1 `, [supplier[0].supplier_id]);
+};
+
+module.exports.deleteServiceHours = async(client, serviceHoursId) =>{
+    return await client.query(`
+    DELETE FROM smartcity."service_hours"
+    WHERE service_hours_id = $1`, [serviceHoursId]);
+};
+
+module.exports.selectServicesHours = async(client, filter) =>{
+   
+
+
 };

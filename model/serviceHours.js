@@ -14,6 +14,7 @@ module.exports.createServiceHours = async (client, serviceHours, userId) => {
    }
 
    return await ServiceHoursDAO.insertServicesHours(client, serviceHours, userId);
+  
 };
 
 module.exports.updateServiceHours = async(client, serviceHoursId, serviceHours, userId) =>{
@@ -31,4 +32,12 @@ module.exports.getServicesHoursAsASupplier = async(client, userId) =>{
    return servicesHoursAsASupplier;
 };
 
+module.exports.deleteServiceHours = async(client, serviceHoursId) =>{
+   const {rowCount} = await ServiceHoursDAO.deleteServiceHours(client, serviceHoursId);
+   return rowCount;
+};
 
+module.exports.getServicesHours = async(client, filter) =>{
+   const { rows: servicesHours } = await ServiceHoursDAO.selectServicesHours(client, filter);
+   return servicesHours;
+};

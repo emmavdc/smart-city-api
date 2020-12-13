@@ -87,6 +87,33 @@ module.exports.postAnimal = async(req, res) =>{
     }
 };
 
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      AnimalUpdated:
+ *          description: User Animal updated
+ *
+ *  requestBodies:
+ *      UpdateAnimal:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          breed:
+ *                              type: string
+ *                          review:
+ *                              type: string
+ *                          weight:
+ *                              type: string
+ *                          name:
+ *                              type: string
+ *                          animalTypeId:
+ *                              type: integer
+ * 
+ */
+
 module.exports.putAnimal = async(req, res) =>{
     const client = await pool.connect();
     const userId = req.session.userId;
@@ -106,7 +133,16 @@ module.exports.putAnimal = async(req, res) =>{
     }
 };
 
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      AnimalDeleted:
+ *          description: The animal is deleted
+ *      AnimalNotDeleted:
+ *          description : The animal is not found
+ *
+ */
 
 module.exports.deleteAnimal = async(req, res) =>{
     const client = await pool.connect();
@@ -115,13 +151,12 @@ module.exports.deleteAnimal = async(req, res) =>{
 
     try{
         const rowCount = await AnimalModel.deleteAnimal(client, animalId,userId);
-        if(rowCount != 0){
+        if(rowCount == 1){
             res.sendStatus(200);
         }
         else{
-            res.sendStatus(403);
+            res.status(404).json("L'animal n'existe pas");
         }
-       
     }
     catch(e){
         console.log(e);

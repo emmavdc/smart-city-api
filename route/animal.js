@@ -48,7 +48,69 @@ router.get('/', identificationMiddleware.identification, AnimalController.getAni
  */
 
 router.post('/', identificationMiddleware.identification, AnimalController.postAnimal);
+
+/**
+ * @swagger
+ * /animals/{id}:
+ *  delete:
+ *      tags:
+ *          - animal
+ *      description: Delete animal
+ *      security:
+ *          - bearerAuth: []
+ *      parameters:
+ *          - name : id
+ *            description : Animal id
+ *            in: path
+ *            required: true
+ *            schema:
+ *              type: integer
+ *      responses:
+ *          200:
+ *              $ref: '#/components/responses/AnimalDeleted'
+ *          400:
+ *              description: Bad request
+ *          401:
+ *              $ref: '#/components/responses/MissingJWT'
+ *          404:
+ *              $ref: '#/components/responses/AnimalNotDeleted'
+ *          500:
+ *              description: Server error
+ *
+ */
+
 router.delete('/:id', identificationMiddleware.identification, AnimalController.deleteAnimal);
+
+/**
+ * @swagger
+ * /animals/{id}:
+ *  put:
+ *      tags:
+ *          - animal
+ *      security:
+ *          - bearerAuth: []
+ *      parameters:
+ *          - name : id
+ *            description : Animal id
+ *            in: path
+ *            required: true
+ *            schema:
+ *              type: integer
+ *      description: User update one of his animals
+ *      requestBody:
+ *          $ref: '#/components/requestBodies/UpdateAnimal'
+ *      responses:
+ *          201:
+ *              $ref: '#/components/responses/AnimalUpdated'
+ *          400:
+ *               description: Bad request
+ *          401:
+ *              $ref: '#/components/responses/MissingJWT'
+ *          500:
+ *              description: Server error
+ *
+ */
+
 router.put('/:id', identificationMiddleware.identification, AnimalController.putAnimal);
 
 module.exports = router;
