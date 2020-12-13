@@ -9,7 +9,7 @@ module.exports.createUser = async (client, user) => {
   user.password = bcrypt.hashSync(user.password, saltRounds);
 
   // if user already exist
-  const { rows: users } = await UserDAO.selectUser(client, user);
+  const { rows: users } = await UserDAO.selectUserByEmail(client, user);
   if (users[0]) {
     return null;
   }
@@ -19,7 +19,7 @@ module.exports.createUser = async (client, user) => {
 };
 
 module.exports.loginUser = async (client, user) => {
-  const { rows: users } = await UserDAO.selectUser(client, user);
+  const { rows: users } = await UserDAO.selectUserByEmail(client, user);
 
   if (users[0]) {
     if (bcrypt.compareSync(user.password, users[0].password)) {
@@ -51,6 +51,11 @@ module.exports.updateUser = async (client, user, userId) => {
   //todo #8 business check (email exists + return errors)
 
   return await UserDAO.updateUser(client, user, userId);
+};
+
+module.exports.getUser = async (client, user_id) => {
+  const { rows: users } = await UserDAO.selectUser(client, user_id);
+  return users[0];
 };
 
 module.exports.getUsers = async (client, filter) => {

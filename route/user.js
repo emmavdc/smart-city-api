@@ -53,6 +53,7 @@ router.post('/',  UserController.postUser);
 
 router.post('/actions/login', UserController.loginUser);
 
+/*Not documented fonction, used only by the creator :-) */
 router.post('/actions/addadmin', UserController.addAdminUser);
 
 /**
@@ -90,6 +91,41 @@ router.post('/actions/addadmin', UserController.addAdminUser);
 
 //TODO #6 update user 
 router.put('/:id',identificationMiddleware.identification, UserController.putUser);
+
+/**
+ * @swagger
+ * /users/{id}:
+ *  get:
+ *      tags:
+ *          - user
+ *      security:
+ *          - bearerAuth: []
+ *      description: Get data of a specific user
+ *      parameters:
+ *          - name : id
+ *            description : User id
+ *            in: path
+ *            required: true
+ *            schema:
+ *              type: integer
+ *      requestBody:
+ *          $ref: '#/components/requestBodies/UpdateUser'
+ *      responses:
+ *          200:
+ *              $ref: '#/components/responses/UserUpdated'
+ *          400:
+ *              description: Bad request
+ *          401:
+ *              $ref: '#/components/responses/MissingJWT'
+ *          403:
+ *              $ref: '#/components/responses/UserDoesNotHaveAcces'
+ *          500:
+ *              description: Server error
+ * 
+ *
+ */
+
+router.get('/:id',identificationMiddleware.identification, UserController.getUser);
 
 /**
  * @swagger
