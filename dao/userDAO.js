@@ -56,11 +56,17 @@ module.exports.selectUserByEmail = async (client, user) => {
 module.exports.selectUser = async (client, user_Id) => {
   return await client.query(
     `
-        SELECT  user_id, email, password, firstname, lastname, phone,
+        SELECT  u.user_id, email, password, firstname, lastname, phone,
                 is_admin, locality, postal_code, street_number,
-                street_name, country 
-        FROM smartcity."user"
-        WHERE user_Id = $1` ,
+                street_name, country, 
+                case when search_walker is null then false else true end,
+                case when search_host is null then false else true end,
+                case when is_host is null then false else true end,
+                case when is_animal_walker is null then false else true end
+        FROM smartcity."user" u 
+        LEFT OUTER JOIN smartcity."customer" c ON c.user_id = u.user_id
+        LEFT OUTER JOIN smartcity."supplier" s ON s.user_id = u.user_id
+        WHERE u.user_Id = $1` ,
     [user_Id]
   );
 };

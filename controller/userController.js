@@ -310,15 +310,17 @@ module.exports.getUser = async (req, res) => {
 
 module.exports.putUser = async (req, res) => {
   const client = await pool.connect();
-  const userId = req.session.userId;
+  let userId = req.session.userId;
   const isAdmin = req.session.isAdmin;
   const userIdParams = req.params.id;
   const user = req.body;
 
-  if (isAdmin || Number(userId) !== Number(userIdParams)) {
+  if (!isAdmin && Number(userId) !== Number(userIdParams)) {
     res.sendStatus(403);
     return;
   }
+
+  if (isAdmin) userId = userIdParams;
 
   try {
     await client.query("BEGIN;");
