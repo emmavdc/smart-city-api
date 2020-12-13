@@ -202,6 +202,33 @@ module.exports.loginUser = async (req, res) => {
   }
 };
 
+/*get user*/
+module.exports.getUser = async (req, res) => {
+
+  const user_id = req.params.id;
+
+  if (isNaN(user_id)) {
+    res.sendStatus(400);
+  } else {
+    const client = await pool.connect();
+
+    try {
+      const user = await UserModel.getUser(client, user_id);
+      if (user) {
+        res.json(user);
+      } else {
+        res.sendStatus(401);
+      }
+    } catch (e) {
+      console.log(e);
+      res.sendStatus(500);
+    } finally {
+      client.release();
+    }
+  }
+};
+
+
 /**
  * @swagger
  * components:

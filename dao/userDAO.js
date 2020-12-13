@@ -41,17 +41,30 @@ module.exports.insertUser = async (client, user) => {
   return newUser[0].user_id;
 };
 
-module.exports.selectUser = async (client, user) => {
+module.exports.selectUserByEmail = async (client, user) => {
   return await client.query(
     `
         SELECT  user_id, email, password, firstname, lastname, phone,
                 is_admin, locality, postal_code, street_number,
                 street_name, country 
         FROM smartcity."user"
-        WHERE email = $1`,
+        WHERE email = $1` ,
     [user.email]
   );
 };
+
+module.exports.selectUser = async (client, user_Id) => {
+  return await client.query(
+    `
+        SELECT  user_id, email, password, firstname, lastname, phone,
+                is_admin, locality, postal_code, street_number,
+                street_name, country 
+        FROM smartcity."user"
+        WHERE user_Id = $1` ,
+    [user_Id]
+  );
+};
+
 
 module.exports.selectCustomer = async(client, userId) =>{
     const {rows : customer} = await client.query(`
