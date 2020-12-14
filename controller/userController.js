@@ -203,7 +203,14 @@ module.exports.loginUser = async (req, res) => {
   }
 };
 
-/*get user*/
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      UserIsFound:
+ *          description: The user is returned
+ *
+ */
 module.exports.getUser = async (req, res) => {
 
   const user_id = req.params.id;

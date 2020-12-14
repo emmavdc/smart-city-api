@@ -69,8 +69,8 @@ module.exports.selectServicesHoursAsACustomer = async(client, userId) =>{
 
     return await client.query(`
     SELECT 
-       to_char(sh.start_date_time,'DD-MM-YYYY HH24:MI:SS'),
-       to_char(sh.end_date_time,'DD-MM-YYYY HH24:MI:SS'),
+       to_char(sh.start_date_time,'DD-MM-YYYY HH24:MI:SS') start_date_time,
+       to_char(sh.end_date_time,'DD-MM-YYYY HH24:MI:SS') end_date_time,
        sh.status,
        sh.description_response,
        sh.type,
@@ -101,8 +101,8 @@ module.exports.selectServicesHoursAsASupplier = async(client, userId) =>{
 
     return await client.query(`
     SELECT 
-       to_char(sh.start_date_time,'DD-MM-YYYY HH24:MI:SS'),
-       to_char(sh.end_date_time,'DD-MM-YYYY HH24:MI:SS'),
+       to_char(sh.start_date_time,'DD-MM-YYYY HH24:MI:SS') start_date_time,
+       to_char(sh.end_date_time,'DD-MM-YYYY HH24:MI:SS') end_date_time,
        sh.status,
        sh.description_response,
        sh.type,
@@ -132,7 +132,43 @@ module.exports.deleteServiceHours = async(client, serviceHoursId) =>{
 };
 
 module.exports.selectServicesHours = async(client, filter) =>{
-   
+   if(!filter.supplierLastame){
+       filter.supplierLastame = "";
+   }
 
+    if(!filter.customerLastame){
+       filter.customerLastame = "";
+   }
 
+    if(!filter.startDate){
+       filter.startDate = "";
+   }
+
+    if(!filter.type){
+       filter.type = "";
+   }
+
+   return await client.query(`
+   SELECT supus.lastname as supplier_lastname,
+        supus.firstname as supplier_firstname,
+        cusus.lastname as customer_lastname,
+        cusus.firstname as customer_firstname,
+        to_char(sh.start_date_time,'DD-MM-YYYY HH24:MI:SS') start_date_time,
+        to_char(sh.start_date_time,'DD-MM-YYYY HH24:MI:SS') end_date_time,
+        sh.type
+   FROM smartcity."service_hours" sh
+   JOIN smartcity."supplier" as sup ON sup.supplier_id = sh.supplier_id
+   JOIN smartcity."customer" as cus ON cus.customer_id = sh.customer_id
+   JOIN smartcity."user" as cusus ON cusus.user_id = cus.user_id
+   JOIN smartcity."user" as supus ON supus.user_id = sup.user_id
+   WHERE supus.lastname like $1
+     AND cusus.lastname like $2
+     AND CAST(sh.start_date_time AS varchar) like $3
+     AND sh.type like $4`, 
+     [
+        "%" + filter.supplierLastame + "%", 
+        "%" + filter.customerLastame + "%",
+        "%" + filter.startDate + "%",
+        "%" + filter.type + "%"
+     ]);
 };

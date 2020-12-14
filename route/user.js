@@ -108,11 +108,9 @@ router.put('/:id',identificationMiddleware.identification, UserController.putUse
  *            required: true
  *            schema:
  *              type: integer
- *      requestBody:
- *          $ref: '#/components/requestBodies/UpdateUser'
  *      responses:
  *          200:
- *              $ref: '#/components/responses/UserUpdated'
+ *              $ref: '#/components/responses/UserIsFound'
  *          400:
  *              description: Bad request
  *          401:

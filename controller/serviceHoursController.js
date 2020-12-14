@@ -3,6 +3,43 @@ const ServiceHoursModel = require("../model/serviceHours");
 const e = require("express");
 
 
+
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      ServiceHoursAdded:
+ *          description: Service Hour added
+ *      ServiceHoursNotAvailable : 
+ *          description : Service Hour not available
+ *
+ *  requestBodies:
+ *      AddServicesHour:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          startDateTime:
+ *                              type: string
+ *                          endDateTime:
+ *                              type: string
+ *                          type:  #
+ *                              type: string
+ *                          description:
+ *                              type: string
+ *                          emailSupplier:
+ *                              type: string
+ *                          animalId:
+ *                              type: integer
+ *                      required:
+ *                          - startDateTime
+ *                          - endDateTime
+ *                          - type
+ *                          - emailSupplier
+ *                          - animalId
+ */
+
 module.exports.postServiceHours = async(req, res) =>{
     const client = await pool.connect();
     const servicesHours = req.body;
@@ -33,6 +70,28 @@ module.exports.postServiceHours = async(req, res) =>{
     }
 };
 
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      ServiceHoursUpdated:
+ *          description: Service Hour updated
+ *
+ *  requestBodies:
+ *      UpdateServiceHours:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          description:
+ *                              type: string
+ *                          isAcceptedRequest:
+ *                              type: boolean
+ *                      required:
+ *                          - isAcceptedRequest
+ */
+
 module.exports.patchServiceHours = async(req, res) =>{
     const client = await pool.connect();
     const serviceHours = req.body;
@@ -46,7 +105,7 @@ module.exports.patchServiceHours = async(req, res) =>{
             res.sendStatus(201);
         }
         else{
-            res.sendStatus(403);
+            res.sendStatus(400);
         }
     } catch (error) {
         res.sendStatus(500);
@@ -57,6 +116,15 @@ module.exports.patchServiceHours = async(req, res) =>{
     }
 
 };
+
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      CustomerServicesHoursReturned:
+ *          description: The customer services hours are returned
+ * 
+ */
 
 module.exports.getServicesHoursAsACustomer = async(req, res) =>{
     const client = await pool.connect();
@@ -76,6 +144,16 @@ module.exports.getServicesHoursAsACustomer = async(req, res) =>{
 
 };
 
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      SupplierServicesHoursReturned:
+ *          description: The supplier services hours are returned
+ * 
+ */
+
+
 module.exports.getServicesHoursAsASupplier = async(req, res) =>{
     const client = await pool.connect();
     const userId = req.session.userId;
@@ -93,6 +171,15 @@ module.exports.getServicesHoursAsASupplier = async(req, res) =>{
     }
 
 };
+
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      ServiceHoursDeleted:
+ *          description: Service Hours deleted
+ * 
+ */
 
 module.exports.deleteServiceHours = async(req, res) =>{
     const client = await pool.connect();
@@ -115,6 +202,15 @@ module.exports.deleteServiceHours = async(req, res) =>{
     }
 
 };
+
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      ServicesHoursAreFound:
+ *          description: The services hours are returned
+ *
+ */
 
 module.exports.getServicesHours = async(req, res) =>{
     const client = await pool.connect();

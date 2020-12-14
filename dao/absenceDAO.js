@@ -32,7 +32,7 @@ module.exports.selectAbsences = async(client,userId) =>{
     AND u.user_id = $1`, [userId]);
 
    return await client.query(`
-    SELECT to_char(date,'DD-MM-YYYY'), absence_id
+    SELECT to_char(date,'DD-MM-YYYY') date, absence_id
     FROM smartcity."absence" 
     WHERE supplier_id = $1`, [supplier[0].supplier_id]);
 };
