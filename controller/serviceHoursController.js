@@ -45,6 +45,17 @@ module.exports.postServiceHours = async(req, res) =>{
     const servicesHours = req.body;
     const userId = req.session.userId;
 
+    if (
+        !servicesHours.startDateTime ||
+        !servicesHours.endDateTime ||
+        !servicesHours.type ||
+        !servicesHours.emailSupplier ||
+        !servicesHours.animalId
+      ) {
+        res.sendStatus(400);
+        return;
+      }
+
     // when serviceHours is created, status is waiting
     servicesHours.status = "en attente";
 

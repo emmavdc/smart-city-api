@@ -54,6 +54,11 @@ module.exports.postSupplierAnimal = async (req, res) => {
     const {animalTypeId} = req.body; 
     const userId = req.session.userId;
 
+    if (!animalTypeId) {
+        res.sendStatus(400);
+        return;
+      }
+
     try {
         await AnimalTypeModel.createSupplierAnimal(client, animalTypeId, userId);
         res.sendStatus(201);

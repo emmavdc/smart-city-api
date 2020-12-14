@@ -27,6 +27,11 @@ module.exports.postAbsence = async(req, res) =>{
     const userId = req.session.userId;
     const absence = req.body;
 
+    if (!absence.date) {
+        res.sendStatus(400);
+        return;
+      }
+
     //^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$
 
     try{

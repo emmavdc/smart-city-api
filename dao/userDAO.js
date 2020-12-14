@@ -59,10 +59,10 @@ module.exports.selectUser = async (client, user_Id) => {
         SELECT  u.user_id, email, password, firstname, lastname, phone,
                 is_admin, locality, postal_code, street_number,
                 street_name, country, 
-                case when search_walker is null then false else true end,
-                case when search_host is null then false else true end,
-                case when is_host is null then false else true end,
-                case when is_animal_walker is null then false else true end
+                case when search_walker is not true then false else true end as search_walker,
+                case when search_host  is not true then false else true end as search_host,
+                case when is_host  is not true then false else true end as is_host,
+                case when is_animal_walker is not true then false else true end as is_animal_walker
         FROM smartcity."user" u 
         LEFT OUTER JOIN smartcity."customer" c ON c.user_id = u.user_id
         LEFT OUTER JOIN smartcity."supplier" s ON s.user_id = u.user_id
