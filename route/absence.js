@@ -51,6 +51,8 @@ router.post('/', identificationMiddleware.identification, AbsenceController.post
  *               description: Bad request
  *          401:
  *              $ref: '#/components/responses/MissingJWT'
+ *          404:
+ *               $ref: '#/components/responses/AbsenceNotFound'
  *          500:
  *              description: Server error
  */

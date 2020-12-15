@@ -95,6 +95,39 @@ router.put('/:id',identificationMiddleware.identification, UserController.putUse
 
 //patch user for admin
 
+/**
+ * @swagger
+ * /users/{id}:
+ *  patch:
+ *      tags:
+ *          - user
+ *      security:
+ *          - bearerAuth: []
+ *      description: Update data of a specific user by admin
+ *      parameters:
+ *          - name : id
+ *            description : User id
+ *            in: path
+ *            required: true
+ *            schema:
+ *              type: integer
+ *      requestBody:
+ *          $ref: '#/components/requestBodies/UpdateUserByAdmin'
+ *      responses:
+ *          200:
+ *              $ref: '#/components/responses/UserUpdatedByAdmin'
+ *          400:
+ *              description: Bad request
+ *          401:
+ *              $ref: '#/components/responses/MissingJWT'
+ *          403:
+ *              $ref: '#/components/responses/mustBeAdministrator'
+ *          500:
+ *              description: Server error
+ * 
+ *
+ */
+
 router.patch('/:id',identificationMiddleware.identification, authorizationMiddleware.mustBeAdministrator, UserController.patchUser);
 
 

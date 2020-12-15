@@ -41,7 +41,6 @@ const e = require("express");
  */
 
 module.exports.postServiceHours = async(req, res) =>{
-    const client = await pool.connect();
     const servicesHours = req.body;
     const userId = req.session.userId;
 
@@ -55,10 +54,12 @@ module.exports.postServiceHours = async(req, res) =>{
         res.sendStatus(400);
         return;
       }
+    
 
     // when serviceHours is created, status is waiting
     servicesHours.status = "en attente";
 
+    const client = await pool.connect();
     try {
         await client.query("BEGIN;");
         const rowCount = await ServiceHoursModel.createServiceHours(client, servicesHours, userId);
@@ -104,12 +105,17 @@ module.exports.postServiceHours = async(req, res) =>{
  */
 
 module.exports.patchServiceHours = async(req, res) =>{
-    const client = await pool.connect();
     const serviceHours = req.body;
     const serviceHoursId = req.params.id;
     const userId = req.session.userId;
     serviceHours.status = serviceHours.isAcceptedRequest ? "accepté" : "refusé";
 
+    if (isNaN(serviceHoursId)) {
+        res.sendStatus(400);
+        return;
+    }
+
+    const client = await pool.connect();
     try {
         const rowCount = await ServiceHoursModel.updateServiceHours(client, serviceHoursId, serviceHours, userId);
         if(rowCount != 0){
@@ -138,8 +144,8 @@ module.exports.patchServiceHours = async(req, res) =>{
  */
 
 module.exports.getServicesHoursAsACustomer = async(req, res) =>{
-    const client = await pool.connect();
     const userId = req.session.userId;
+    const client = await pool.connect();
 
     try {
         const servicesHoursAsACustomer = await ServiceHoursModel.getServicesHoursAsACustomer(client,userId);
@@ -166,8 +172,8 @@ module.exports.getServicesHoursAsACustomer = async(req, res) =>{
 
 
 module.exports.getServicesHoursAsASupplier = async(req, res) =>{
-    const client = await pool.connect();
     const userId = req.session.userId;
+    const client = await pool.connect();
 
     try {
         const servicesHoursAsASupplier = await ServiceHoursModel.getServicesHoursAsASupplier(client,userId);
@@ -193,9 +199,14 @@ module.exports.getServicesHoursAsASupplier = async(req, res) =>{
  */
 
 module.exports.deleteServiceHours = async(req, res) =>{
-    const client = await pool.connect();
     const serviceHoursId = req.params.id;
+
+    if (isNaN(serviceHoursId)) {
+        res.sendStatus(400);
+        return;
+    }
     
+    const client = await pool.connect();
     try {
         const rowCount = await ServiceHoursModel.deleteServiceHours(client, serviceHoursId);
         if(rowCount == 1){
@@ -224,8 +235,8 @@ module.exports.deleteServiceHours = async(req, res) =>{
  */
 
 module.exports.getServicesHours = async(req, res) =>{
-    const client = await pool.connect();
     const filters = req.query;
+    const client = await pool.connect();
 
     try {
         const servicesHours = await ServiceHoursModel.getServicesHours(client, filters);

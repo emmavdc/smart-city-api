@@ -11,9 +11,9 @@ const AnimalModel = require("../model/animal");
  */
 
 module.exports.getAnimals = async(req, res) =>{
-    const client = await pool.connect();
     const userId = req.session.userId;
 
+    const client = await pool.connect();
     try{
         const animals = await AnimalModel.getAnimals(client,userId);
         res.json(animals);
@@ -60,7 +60,6 @@ module.exports.getAnimals = async(req, res) =>{
  */
 
 module.exports.postAnimal = async(req, res) =>{
-    const client = await pool.connect();
     const userId = req.session.userId;
     const animal = req.body;
 
@@ -74,6 +73,7 @@ module.exports.postAnimal = async(req, res) =>{
         return;
       }
 
+    const client = await pool.connect();
     try {
         await AnimalModel.createAnimal(client, animal, userId);
         res.sendStatus(201);
@@ -115,11 +115,16 @@ module.exports.postAnimal = async(req, res) =>{
  */
 
 module.exports.putAnimal = async(req, res) =>{
-    const client = await pool.connect();
     const userId = req.session.userId;
     const animal = req.body;
     const animalId = req.params.id;
 
+    if (isNaN(animalId)) {
+        res.sendStatus(400);
+        return;
+      }
+
+    const client = await pool.connect();
     try {
         await AnimalModel.updateAnimal(client, animal, animalId, userId);
         res.sendStatus(201);
@@ -145,10 +150,15 @@ module.exports.putAnimal = async(req, res) =>{
  */
 
 module.exports.deleteAnimal = async(req, res) =>{
-    const client = await pool.connect();
     const animalId = req.params.id;
     const userId = req.session.userId;
 
+    if (isNaN(animalId)) {
+        res.sendStatus(400);
+        return;
+    }
+
+    const client = await pool.connect();
     try{
         const rowCount = await AnimalModel.deleteAnimal(client, animalId,userId);
         if(rowCount == 1){

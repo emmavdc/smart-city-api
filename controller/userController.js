@@ -327,6 +327,73 @@ module.exports.putUser = async (req, res) => {
 
 //patch for admin
 
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      UserUpdatedByAdmin:
+ *          description: The user is updated by admin
+ *
+ *  requestBodies:
+ *      UpdateUserByAdmin:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          email:
+ *                              type: string
+ *                          password:
+ *                              type: string
+ *                          firstname:
+ *                              type: string
+ *                          lastname:
+ *                              type: string
+ *                          phone:
+ *                              type: string
+ *                          locality:
+ *                              type: string
+ *                          postalCode:
+ *                              type: integer
+ *                          streetNumber:
+ *                              type: string
+ *                          streetName:
+ *                              type: string
+ *                          country:
+ *                              type: string
+ *                          customer:
+ *                              type: object
+ *                              properties:
+ *                                  searchWalker:
+ *                                      type: boolean
+ *                                  searchHost:
+ *                                      type: boolean
+ *                              required:
+ *                                  - searchWalker
+ *                                  - searchHost
+ *                          supplier:
+ *                              type: object
+ *                              properties:
+ *                                  isHost:
+ *                                      type: boolean
+ *                                  isAnimalWalker:
+ *                                      type: boolean
+ *                              required:
+ *                                  - isHost
+ *                                  - isAnimalWalker
+ *                      required:
+ *                          - email
+ *                          - password
+ *                          - firstname
+ *                          - lastname
+ *                          - phone
+ *                          - locality
+ *                          - postalCode
+ *                          - streetNumber
+ *                          - streetName
+ *                          - country
+ */
+
 module.exports.patchUser = async (req, res) => {
   const user = req.body;
   const userIdParams = req.params.id;
