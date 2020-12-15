@@ -18,25 +18,43 @@ module.exports.insertUser = async (client, user) => {
     ]
   );
 
-  if (user.customer != null) {
-    await client.query(
-      `
+  if (!user.customer) {
+    user.customer = {
+      searchWalker: false,
+      searchHost: false,
+    };
+  }
+
+  await client.query(
+    `
         INSERT INTO smartcity."customer"(search_walker, search_host, user_id) 
         VALUES ($1, $2, $3)`,
-      [user.customer.searchWalker, user.customer.searchHost, newUser[0].user_id]
+    [
+      user.customer.searchWalker !== null ? user.customer.searchWalker : false,
+      user.customer.searchHost !== null ? user.customer.searchHost : false,
+      newUser[0].user_id,
+    ]
+  );
 
-      
-    );
+  if (!user.supplier) {
+    user.supplier = {
+      isHost: false,
+      isAnimalWalker: false,
+    };
   }
 
-  if (user.supplier != null) {
-    await client.query(
-      `
+  await client.query(
+    `
         INSERT INTO smartcity."supplier"(is_host, is_animal_walker, user_id) 
         VALUES ($1, $2, $3)`,
-      [user.supplier.isHost, user.supplier.isAnimalWalker, newUser[0].user_id]
-    );
-  }
+    [
+      user.supplier.isHost !== null ? user.supplier.isHost : false,
+      user.supplier.isAnimalWalker !== null
+        ? user.supplier.isAnimalWalker
+        : false,
+      newUser[0].user_id,
+    ]
+  );
 
   return newUser[0].user_id;
 };
@@ -48,7 +66,7 @@ module.exports.selectUserByEmail = async (client, user) => {
                 is_admin, locality, postal_code, street_number,
                 street_name, country 
         FROM smartcity."user"
-        WHERE email = $1` ,
+        WHERE email = $1`,
     [user.email]
   );
 };
@@ -64,48 +82,53 @@ module.exports.selectUser = async (client, user_Id) => {
                 case when is_host  is not true then false else true end as is_host,
                 case when is_animal_walker is not true then false else true end as is_animal_walker
         FROM smartcity."user" u 
-        LEFT OUTER JOIN smartcity."customer" c ON c.user_id = u.user_id
-        LEFT OUTER JOIN smartcity."supplier" s ON s.user_id = u.user_id
-        WHERE u.user_Id = $1` ,
+        JOIN smartcity."customer" c ON c.user_id = u.user_id
+        JOIN smartcity."supplier" s ON s.user_id = u.user_id
+        WHERE u.user_Id = $1`,
     [user_Id]
   );
 };
 
-
-module.exports.selectCustomer = async(client, userId) =>{
-    const {rows : customer} = await client.query(`
+module.exports.selectCustomer = async (client, userId) => {
+  const { rows: customer } = await client.query(
+    `
     SELECT c.customer_id
     FROM smartcity."customer" c , smartcity."user" u
     WHERE u.user_id = c.user_id
-    AND u.user_id = $1`, [userId]);
+    AND u.user_id = $1`,
+    [userId]
+  );
 
-    return customer;
+  return customer;
 };
 
-module.exports.selectSupplier = async(client, userId) =>{
-    const {rows : supplier} = await client.query(`
+module.exports.selectSupplier = async (client, userId) => {
+  const { rows: supplier } = await client.query(
+    `
     SELECT s.supplier_id
     FROM smartcity."supplier" s, smartcity."user" u
     WHERE u.user_id = s.user_id
-    AND u.user_id = $1`, [userId]);
+    AND u.user_id = $1`,
+    [userId]
+  );
 
-    return supplier;
-
+  return supplier;
 };
 
-module.exports.selectSupplierByEmail = async(client, email) =>{
-  const {rows : supplier} = await client.query(`
+module.exports.selectSupplierByEmail = async (client, email) => {
+  const { rows: supplier } = await client.query(
+    `
   SELECT s.supplier_id
     FROM  smartcity."supplier" s, smartcity."user" u
     WHERE u.user_id = s.user_id
     AND u.user_id =
         (SELECT us.user_id
             FROM smartcity."user" us
-            WHERE email = $1)`,[email]);
+            WHERE email = $1)`,
+    [email]
+  );
   return supplier;
 };
-
-    
 
 module.exports.selectUsers = async (client, filter) => {
   if (!filter.lastname) {
@@ -124,11 +147,11 @@ module.exports.selectUsers = async (client, filter) => {
     `
     SELECT  smartcity."user".user_id, email, firstname, lastname,
     locality,
-    case when customer_id is null then false else true end as iscustomer,
-    case when supplier_id is null then false else true end as issupplier
+    CASE WHEN search_walker = false AND search_host = false THEN false ELSE true end as iscustomer,
+    CASE WHEN is_host = false AND is_animal_walker = false THEN false ELSE true end as issupplier
     FROM smartcity."user"
-    LEFT OUTER JOIN smartcity."customer" ON smartcity."user".user_id = smartcity."customer".user_id
-    LEFT OUTER JOIN smartcity."supplier" ON smartcity."user".user_id = smartcity."supplier".user_id
+    JOIN smartcity."customer" ON smartcity."user".user_id = smartcity."customer".user_id
+    JOIN smartcity."supplier" ON smartcity."user".user_id = smartcity."supplier".user_id
     WHERE is_admin = false
         AND   lastname like $1
         AND   email like $2
@@ -141,7 +164,7 @@ module.exports.selectUsers = async (client, filter) => {
   );
 };
 
-module.exports.updateUser = async (client, user, userID) => {
+module.exports.updateUser = async (client, user, userID, isPatch) => {
   await client.query(
     `
     UPDATE smartcity."user" SET email = $1, password = $2, firstname = $3,
@@ -166,43 +189,65 @@ module.exports.updateUser = async (client, user, userID) => {
     ]
   );
 
-  if (user.customer != null) {
-    await client.query(
-      `UPDATE smartcity."customer" SET commune = $1, search_walker = $2,
-                                                         search_host = $3
-                                                         WHERE user_id = $4;`,
-      [
-        user.customer.commune,
-        user.customer.searchWalker,
-        user.customer.searchHost,
-        userID,
-      ]
-    );
-  }
+  if (isPatch) {
+    if (user.customer != null) {
+      await client.query(
+        `UPDATE smartcity."customer" SET search_walker = $1,
+                                         search_host = $2
+         WHERE user_id = $3;`,
+        [user.customer.searchWalker, user.customer.searchHost, userID]
+      );
+    }
 
-  if (user.supplier != null) {
-    await client.query(
-      `UPDATE smartcity."supplier" SET is_host = $1, is_animal_walker = $2,
+    if (user.supplier != null) {
+      await client.query(
+        `UPDATE smartcity."supplier" SET is_host = $1, is_animal_walker = $2,
+         WHERE user_id = $3;`,
+        [user.supplier.isHost, user.supplier.isAnimalWalker, userID]
+      );
+    }
+  } else {
+    if (user.customer != null) {
+      await client.query(
+        `UPDATE smartcity."customer" SET commune = $1, search_walker = $2,
+                                                       search_host = $3
+         WHERE user_id = $4;`,
+        [
+          user.commune,
+          user.customer.searchWalker,
+          user.customer.searchHost,
+          userID
+        ]
+      );
+    }
+
+    if (user.supplier != null) {
+      await client.query(
+        `UPDATE smartcity."supplier" SET is_host = $1, is_animal_walker = $2,
                                                         slogan = $3, commune = $4, weight_max = $5 
                                                         WHERE user_id = $6;`,
-      [
-        user.supplier.isHost,
-        user.supplier.isAnimalWalker,
-        user.supplier.slogan,
-        user.supplier.commune,
-        user.supplier.weightMax,
-        userID,
-      ]
-    );
+        [
+          user.supplier.isHost,
+          user.supplier.isAnimalWalker,
+          user.supplier.slogan,
+          user.supplier.commune,
+          user.supplier.weightMax,
+          userID,
+        ]
+      );
+    }
   }
 
   return;
 };
 
 module.exports.deleteUser = async (client, userId) => {
-  const {rowCount} = await client.query(`
+  const { rowCount } = await client.query(
+    `
   DELETE FROM smartcity."user"
-  WHERE user_id = $1`, [userId]);
+  WHERE user_id = $1`,
+    [userId]
+  );
 
   return rowCount;
 };

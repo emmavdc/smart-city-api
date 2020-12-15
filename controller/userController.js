@@ -319,17 +319,14 @@ module.exports.getUser = async (req, res) => {
 module.exports.putUser = async (req, res) => {
   const client = await pool.connect();
   let userId = req.session.userId;
-  const isAdmin = req.session.isAdmin;
   const userIdParams = req.params.id;
   const user = req.body;
 
-  if (!isAdmin && Number(userId) !== Number(userIdParams)) {
+  if (Number(userId) !== Number(userIdParams)) {
     res.sendStatus(403);
     return;
   }
-
-  if (isAdmin) userId = userIdParams;
-
+  
   try {
     await client.query("BEGIN;");
     await UserModel.updateUser(client, user, userId);
@@ -343,6 +340,31 @@ module.exports.putUser = async (req, res) => {
     client.release();
   }
 };
+
+//patch for admin
+
+module.exports.patchUser = async (req, res) => {
+  const client = await pool.connect();
+  const userIdParams = req.params.id;
+  const user = req.body;
+
+
+  userId = userIdParams;
+
+  try {
+    await client.query("BEGIN;");
+    await UserModel.updateUser(client, user, userId, true);
+    await client.query("COMMIT");
+    res.sendStatus(200);
+  } catch (error) {
+    await client.query("ROLLBACK;");
+    console.log(error);
+    res.sendStatus(500);
+  } finally {
+    client.release();
+  }
+};
+
 
 /**
  * @swagger

@@ -92,6 +92,12 @@ router.post('/actions/addadmin', UserController.addAdminUser);
 //TODO #6 update user 
 router.put('/:id',identificationMiddleware.identification, UserController.putUser);
 
+
+//patch user for admin
+
+router.patch('/:id',identificationMiddleware.identification, authorizationMiddleware.mustBeAdministrator, UserController.patchUser);
+
+
 /**
  * @swagger
  * /users/{id}:
