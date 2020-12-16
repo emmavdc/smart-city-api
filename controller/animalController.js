@@ -93,6 +93,8 @@ module.exports.postAnimal = async(req, res) =>{
  *  responses:
  *      AnimalUpdated:
  *          description: User Animal updated
+ *      AnimalNotFound:
+ *          description: Animal is not found
  *
  *  requestBodies:
  *      UpdateAnimal:
@@ -126,8 +128,13 @@ module.exports.putAnimal = async(req, res) =>{
 
     const client = await pool.connect();
     try {
-        await AnimalModel.updateAnimal(client, animal, animalId, userId);
-        res.sendStatus(201);
+        const rowCount = await AnimalModel.updateAnimal(client, animal, animalId, userId);
+        if(rowCount == 1){
+            res.sendStatus(201);
+        }
+        else{
+            res.sendStatus(404);
+        }
         
     } catch (error) {
         console.log(error);
@@ -162,7 +169,7 @@ module.exports.deleteAnimal = async(req, res) =>{
     try{
         const rowCount = await AnimalModel.deleteAnimal(client, animalId,userId);
         if(rowCount == 1){
-            res.sendStatus(200);
+            res.sendStatus(204);
         }
         else{
             res.status(404).json("L'animal n'existe pas");

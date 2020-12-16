@@ -123,7 +123,7 @@ router.get('/supplier', identificationMiddleware.identification, ServiceHoursCon
  *            schema:
  *              type: integer
  *      responses:
- *          200:
+ *          204:
  *              $ref: '#/components/responses/ServiceHoursDeleted'
  *          400:
  *               description: Bad request

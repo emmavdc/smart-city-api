@@ -210,7 +210,7 @@ module.exports.deleteServiceHours = async(req, res) =>{
     try {
         const rowCount = await ServiceHoursModel.deleteServiceHours(client, serviceHoursId);
         if(rowCount == 1){
-            res.sendStatus(200);
+            res.sendStatus(204);
         }
         else{
             res.sendStatus(404);

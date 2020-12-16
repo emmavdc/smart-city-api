@@ -209,11 +209,11 @@ module.exports.updateUser = async (client, user, userID, isPatch) => {
   } else {
     if (user.customer != null) {
       await client.query(
-        `UPDATE smartcity."customer" SET commune = $1, search_walker = $2,
+        `UPDATE smartcity."customer" SET locality = $1, search_walker = $2,
                                                        search_host = $3
          WHERE user_id = $4;`,
         [
-          user.commune,
+          user.locality,
           user.customer.searchWalker,
           user.customer.searchHost,
           userID
@@ -224,13 +224,13 @@ module.exports.updateUser = async (client, user, userID, isPatch) => {
     if (user.supplier != null) {
       await client.query(
         `UPDATE smartcity."supplier" SET is_host = $1, is_animal_walker = $2,
-                                                        slogan = $3, commune = $4, weight_max = $5 
+                                                        slogan = $3, locality = $4, weight_max = $5 
                                                         WHERE user_id = $6;`,
         [
           user.supplier.isHost,
           user.supplier.isAnimalWalker,
           user.supplier.slogan,
-          user.supplier.commune,
+          user.supplier.locality,
           user.supplier.weightMax,
           userID,
         ]

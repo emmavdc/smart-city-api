@@ -90,7 +90,7 @@ router.post('/supplier', identificationMiddleware.identification, AnimalTypeCont
  *            schema:
  *              type: integer
  *      responses:
- *          200:
+ *          204:
  *              $ref: '#/components/responses/UserAnimaltypeDeleted'
  *          400:
  *              description: Bad request

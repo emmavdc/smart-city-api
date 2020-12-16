@@ -70,7 +70,7 @@ module.exports.deleteAbsence = async(req, res) =>{
     try{
         const rowCount = await AbsenceModel.deleteAbsence(client, absenceId,userId);
         if(rowCount == 1){
-            res.sendStatus(200);
+            res.sendStatus(204);
         }
         else{
             res.sendStatus(404);

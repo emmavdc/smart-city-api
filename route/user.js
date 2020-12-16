@@ -207,7 +207,7 @@ router.get('/', identificationMiddleware.identification, authorizationMiddleware
  *            schema:
  *              type: integer
  *      responses:
- *          200:
+ *          204:
  *              $ref: '#/components/responses/UserDeleted'
  *          400:
  *              description: Bad request

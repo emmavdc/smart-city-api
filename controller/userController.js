@@ -267,7 +267,7 @@ module.exports.getUser = async (req, res) => {
  *                                      type: boolean
  *                                  searchHost:
  *                                      type: boolean
- *                                  commune:
+ *                                  locality:
  *                                      type: string
  *                              required:
  *                                  - searchWalker
@@ -281,7 +281,7 @@ module.exports.getUser = async (req, res) => {
  *                                      type: boolean
  *                                  slogan:
  *                                      type: string
- *                                  commune:
+ *                                  locality:
  *                                      type: string
  *                                  weightMax:
  *                                      type: integer
@@ -304,11 +304,13 @@ module.exports.getUser = async (req, res) => {
 module.exports.putUser = async (req, res) => {
   let userId = req.session.userId;
   const user = req.body;
+  user.isAdmin = false;
 
   if (!validate(user)) {
     res.sendStatus(400);
     return;
   }
+  
 
   const client = await pool.connect();
   try {
@@ -467,7 +469,7 @@ module.exports.deleteUser = async (req, res) => {
   try {
     const rowCount = await UserModel.deleteUser(client, userId);
     if (rowCount == 1) {
-      res.sendStatus(200);
+      res.sendStatus(204);
     } else {
       res.sendStatus(404);
     }

@@ -119,7 +119,7 @@ module.exports. deleteSupplierAnimal = async (req, res) => {
     try{
         const rowCount = await AnimalTypeModel.deleteSupplierAnimal(client, animalTypeId,userId);
         if(rowCount != 0){
-            res.sendStatus(200);
+            res.sendStatus(204);
         }
         else{
             res.sendStatus(403);

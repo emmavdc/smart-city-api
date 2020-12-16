@@ -66,7 +66,7 @@ router.post('/', identificationMiddleware.identification, AnimalController.postA
  *            schema:
  *              type: integer
  *      responses:
- *          200:
+ *          204:
  *              $ref: '#/components/responses/AnimalDeleted'
  *          400:
  *              description: Bad request
@@ -106,6 +106,8 @@ router.delete('/:id', identificationMiddleware.identification, AnimalController.
  *               description: Bad request
  *          401:
  *              $ref: '#/components/responses/MissingJWT'
+ *          404:
+ *              $ref: '#/components/responses/AnimalNotFound'
  *          500:
  *              description: Server error
  *

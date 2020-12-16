@@ -1,4 +1,3 @@
-const router = require("../route/serviceHours");
 const UserDAO = require("./userDAO");
 
 module.exports.insertServicesHours = async (client, serviceHours, userId) => {

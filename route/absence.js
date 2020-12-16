@@ -45,7 +45,7 @@ router.post('/', identificationMiddleware.identification, AbsenceController.post
  *            schema:
  *              type: integer
  *      responses:
- *          200:
+ *          204:
  *              $ref: '#/components/responses/AbsenceDeleted'
  *          400:
  *               description: Bad request
