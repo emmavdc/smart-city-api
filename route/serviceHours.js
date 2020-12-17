@@ -144,6 +144,27 @@ router.delete('/:id', identificationMiddleware.identification, authorizationMidd
  *      tags:
  *          - service hours
  *      description: Get services hours which have specific data
+ *      parameters:
+ *          - in : query
+ *            name : supplierLastame
+ *            description: Get users who have specific supplier lastame data
+ *            schema:
+ *              type: string
+ *          - in : query
+ *            name : customerLastame
+ *            description: Get users who have specific customer lastame data
+ *            schema:
+ *              type: string
+ *          - in : query
+ *            name : startDate
+ *            description: Get users who have specific start date data
+ *            schema:
+ *              type: string
+ *          - in : query
+ *            name : type
+ *            description: Get users who have specific type data
+ *            schema:
+ *              type: string
  *      security:
  *          - bearerAuth: []
  *      responses:

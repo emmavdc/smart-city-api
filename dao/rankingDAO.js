@@ -20,3 +20,30 @@ module.exports.deleteRanking = async(client, rankingId) =>{
     DELETE FROM smartcity."ranking"
     WHERE ranking_id = $1`, [rankingId]);
 };
+
+module.exports.selectRankings = async(client, filter) =>{
+    if(!filter.supplierLastame){
+        filter.supplierLastame = "";
+    }
+ 
+     if(!filter.customerLastame){
+        filter.customerLastame = "";
+    }
+ 
+     if(!filter.startDate){
+        filter.startDate = "";
+    }
+ 
+     if(!filter.type){
+        filter.type = "";
+    }
+ 
+    return await client.query(`
+    `, 
+      [
+         "%" + filter.supplierLastame + "%", 
+         "%" + filter.customerLastame + "%",
+         "%" + filter.startDate + "%",
+         "%" + filter.type + "%"
+      ]);
+ };

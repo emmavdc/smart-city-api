@@ -92,3 +92,27 @@ module.exports.deleteRanking = async(req, res) =>{
     }
 
 };
+
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      RankingsAreFound:
+ *          description: The rankings are returned
+ *
+ */
+module.exports.getRankings = async(req, res) =>{
+    const filters = req.query;
+    const client = await pool.connect();
+
+    try {
+        const rankings = await RankingModel.getRankings(client, filters);
+        res.json(rankings);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+    finally{
+        client.release();
+    }
+};

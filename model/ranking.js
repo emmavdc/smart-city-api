@@ -12,4 +12,10 @@ module.exports.deleteRanking =  async (client, rankingId) =>{
     return rowCount;
 };
 
+module.exports.getRankings = async(client, filter) =>{
+    const { rows: rankings } = await RankingDAO.selectRankings(client, filter);
+    return rankings;
+ };
+ 
+
 

@@ -171,6 +171,23 @@ router.get('/:id',identificationMiddleware.identification, UserController.getUse
  *      tags:
  *          - user
  *      description: Get users who have specific data
+ *      parameters:
+ *          - in : query
+ *            name : lastname
+ *            description: Get users who have specific lastname data
+ *            schema:
+ *              type: string
+ *          - in : query
+ *            name : locality
+ *            description: Get users who have specific locality data
+ *            schema:
+ *              type: string
+ *          - in : query
+ *            name : email
+ *            description: Get users who have specific email data
+ *            schema:
+ *              type: string
+ *            
  *      security:
  *          - bearerAuth: []
  *      responses:
