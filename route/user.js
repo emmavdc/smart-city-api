@@ -7,7 +7,7 @@ const authorizationMiddleware = require("../middleware/authorization")
 
 /**
  * @swagger
- * /users:
+ * /v1/users:
  *  post:
  *      tags:
  *          - user
@@ -30,7 +30,7 @@ router.post('/',  UserController.postUser);
 
 /**
  * @swagger
- * /users/actions/login:
+ * /v1/users/actions/login:
  *  post:
  *      tags:
  *          - user
@@ -58,7 +58,7 @@ router.post('/actions/addadmin', UserController.addAdminUser);
 
 /**
  * @swagger
- * /users/{id}:
+ * /v1/users/{id}:
  *  put:
  *      tags:
  *          - user
@@ -97,7 +97,7 @@ router.put('/:id',identificationMiddleware.identification, UserController.putUse
 
 /**
  * @swagger
- * /users/{id}:
+ * /v1/users/{id}:
  *  patch:
  *      tags:
  *          - user
@@ -133,7 +133,7 @@ router.patch('/:id',identificationMiddleware.identification, authorizationMiddle
 
 /**
  * @swagger
- * /users/{id}:
+ * /v1/users/{id}:
  *  get:
  *      tags:
  *          - user
@@ -166,7 +166,7 @@ router.get('/:id',identificationMiddleware.identification, UserController.getUse
 
 /**
  * @swagger
- * /users:
+ * /v1/users:
  *  get:
  *      tags:
  *          - user
@@ -209,7 +209,7 @@ router.get('/', identificationMiddleware.identification, authorizationMiddleware
 
 /**
  * @swagger
- * /users/{id}:
+ * /v1/users/{id}:
  *  delete:
  *      tags:
  *          - user
@@ -243,7 +243,7 @@ router.delete('/:id', identificationMiddleware.identification, authorizationMidd
 
 /**
  * @swagger
- * /users/actions/addbyadmin:
+ * /v1/users/actions/addbyadmin:
  *  post:
  *      tags:
  *          - user

@@ -62,7 +62,8 @@ module.exports.postRanking = async(req, res) =>{
  *  responses:
  *      RankingDeleted:
  *          description: Ranking deleted
- *      RankingNotFound : Ranking not found
+ *      RankingNotFound: 
+ *          description: Ranking not found
  * 
  */
 

@@ -6,7 +6,7 @@ const identificationMiddleware = require("../middleware/identification");
 
 /**
  * @swagger
- * /absences:
+ * /v1/absences:
  *  post:
  *      tags:
  *          - absence
@@ -30,7 +30,7 @@ router.post('/', identificationMiddleware.identification, AbsenceController.post
 
 /**
  * @swagger
- * /absences/{id}:
+ * /v1/absences/{id}:
  *  delete:
  *      tags:
  *          - absence
@@ -60,7 +60,7 @@ router.delete('/:id', identificationMiddleware.identification, AbsenceController
 
 /**
  * @swagger
- * /absences:
+ * /v1/absences:
  *  get:
  *      tags:
  *          - absence

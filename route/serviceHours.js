@@ -6,13 +6,13 @@ const authorizationMiddleware = require("../middleware/authorization")
 
 /**
  * @swagger
- * /serviceshours:
+ * /v1/serviceshours:
  *  post:
  *      tags:
  *          - service hours
  *      security:
  *          - bearerAuth: []
- *      description: A service hours is created bu the customer
+ *      description: A service hours is created by the customer
  *      requestBody:
  *          $ref: '#/components/requestBodies/AddServicesHour'
  *      responses:
@@ -32,7 +32,7 @@ router.post('/', identificationMiddleware.identification, ServiceHoursController
 
 /**
  * @swagger
- * /serviceshours/{id}:
+ * /v1/serviceshours/{id}:
  *  patch:
  *      tags:
  *          - service hours
@@ -64,7 +64,7 @@ router.patch('/:id',identificationMiddleware.identification, ServiceHoursControl
 
 /**
  * @swagger
- * /serviceshours/customer:
+ * /v1/serviceshours/customer:
  *  get:
  *      tags:
  *          - service hours
@@ -86,7 +86,7 @@ router.get('/customer', identificationMiddleware.identification, ServiceHoursCon
 
 /**
  * @swagger
- * /serviceshours/supplier:
+ * /v1/serviceshours/supplier:
  *  get:
  *      tags:
  *          - service hours
@@ -108,7 +108,7 @@ router.get('/supplier', identificationMiddleware.identification, ServiceHoursCon
 
 /**
  * @swagger
- * /serviceshours/{id}:
+ * /v1/serviceshours/{id}:
  *  delete:
  *      tags:
  *          - service hours
@@ -139,7 +139,7 @@ router.delete('/:id', identificationMiddleware.identification, authorizationMidd
 
 /**
  * @swagger
- * /serviceshours:
+ * /v1/serviceshours:
  *  get:
  *      tags:
  *          - service hours
