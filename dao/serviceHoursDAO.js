@@ -103,7 +103,7 @@ module.exports.selectServicesHoursAsASupplier = async(client, userId) =>{
        to_char(sh.start_date_time,'DD-MM-YYYY HH24:MI:SS') start_date_time,
        to_char(sh.end_date_time,'DD-MM-YYYY HH24:MI:SS') end_date_time,
        sh.status,
-       sh.description_response,
+       sh.description_demande,
        sh.type,
        u.firstname,
        u.phone,

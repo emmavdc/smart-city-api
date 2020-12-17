@@ -11,7 +11,8 @@ module.exports.createAnimal = async(client,animal,userId) =>{
 };
 
 module.exports.updateAnimal = async(client, animal, animalId, userId) =>{
-    return await AnimalDAO.updateAnimal(client, animal, animalId, userId);
+    const {rowCount} = await AnimalDAO.updateAnimal(client, animal, animalId, userId);
+    return rowCount;
 };
 
 

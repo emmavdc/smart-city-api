@@ -14,3 +14,9 @@ module.exports.insertRanking = async(client, ranking, userId) =>{
         ranking.serviceHoursId
     ]);
 };
+
+module.exports.deleteRanking = async(client, rankingId) =>{
+    return await client.query(`
+    DELETE FROM smartcity."ranking"
+    WHERE ranking_id = $1`, [rankingId]);
+};

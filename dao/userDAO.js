@@ -75,7 +75,7 @@ module.exports.selectUser = async (client, user_Id) => {
   return await client.query(
     `
         SELECT  u.user_id, email, password, firstname, lastname, phone,
-                is_admin, locality, postal_code, street_number,
+                is_admin, u.locality, postal_code, street_number,
                 street_name, country, 
                 case when search_walker is not true then false else true end as search_walker,
                 case when search_host  is not true then false else true end as search_host,
@@ -146,7 +146,7 @@ module.exports.selectUsers = async (client, filter) => {
   return await client.query(
     `
     SELECT  smartcity."user".user_id, email, firstname, lastname,
-    locality,
+    smartcity."user".locality,
     CASE WHEN search_walker = false AND search_host = false THEN false ELSE true end as iscustomer,
     CASE WHEN is_host = false AND is_animal_walker = false THEN false ELSE true end as issupplier
     FROM smartcity."user"
@@ -155,7 +155,7 @@ module.exports.selectUsers = async (client, filter) => {
     WHERE is_admin = false
         AND   lastname like $1
         AND   email like $2
-        AND   locality like $3`,
+        AND   smartcity."user".locality like $3`,
     [
       "%" + filter.lastname + "%",
       "%" + filter.email + "%",
@@ -213,7 +213,7 @@ module.exports.updateUser = async (client, user, userID, isPatch) => {
                                                        search_host = $3
          WHERE user_id = $4;`,
         [
-          user.locality,
+          user.customer.locality,
           user.customer.searchWalker,
           user.customer.searchHost,
           userID

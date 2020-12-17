@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/c2b9092d-3dff-407b-8a64-040cddd4520c/resourceGroups/smart-city-pets-services/providers/Microsoft.Web/sites/pets-services",
+    "appService.deploySubpath": "."
+}
