@@ -35,10 +35,10 @@ router.post('/', identificationMiddleware.identification, RankingController.post
  * /v1/rankings/{id}:
  *  delete:
  *      tags:
- *          - service hours
+ *          - ranking
  *      security:
  *          - bearerAuth: []
- *      description: Admin delete one of services hours
+ *      description: Admin delete one of rankings
  *      parameters:
  *          - name : id
  *            description : Ranking id
@@ -68,8 +68,8 @@ router.delete('/:id', identificationMiddleware.identification, authorizationMidd
  * /v1/rankings:
  *  get:
  *      tags:
- *          - service hours
- *      description: Get services hours which have specific data
+ *          - ranking
+ *      description: Get rankings which have specific data
  *      parameters:
  *          - in : query
  *            name : customerLastame
