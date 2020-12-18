@@ -29,7 +29,7 @@ module.exports.selectRankings = async(client, filter) =>{
         filter.startDate = "";
     }
     return await client.query(`
-    SELECT  r.ranking_id, r.number_of_stars,
+    SELECT  r.ranking_id, r.number_of_stars, r.review,
         supus.lastname as supplier_lastname,
         supus.firstname as supplier_firstname,
         cusus.lastname as customer_lastname,
