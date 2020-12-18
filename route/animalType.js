@@ -5,7 +5,7 @@ const identificationMiddleware = require("../middleware/identification")
 
 /**
  * @swagger
- * /animalTypes:
+ * /v1/animalTypes:
  *  get:
  *      tags:
  *          - animal type
@@ -27,7 +27,7 @@ router.get('/',identificationMiddleware.identification,AnimalTypeController.getA
 
 /**
  * @swagger
- * /animalTypes/supplier:
+ * /v1/animalTypes/supplier:
  *  get:
  *      tags:
  *          - animal type
@@ -49,7 +49,7 @@ router.get('/supplier',identificationMiddleware.identification,AnimalTypeControl
 
 /**
  * @swagger
- * /animalTypes/supplier:
+ * /v1/animalTypes/supplier:
  *  post:
  *      tags:
  *          - animal type
@@ -75,7 +75,7 @@ router.post('/supplier', identificationMiddleware.identification, AnimalTypeCont
 
 /**
  * @swagger
- * /animalTypes/supplier/{id}:
+ * /v1/animalTypes/supplier/{id}:
  *  delete:
  *      tags:
  *          - animal type
@@ -90,7 +90,7 @@ router.post('/supplier', identificationMiddleware.identification, AnimalTypeCont
  *            schema:
  *              type: integer
  *      responses:
- *          200:
+ *          204:
  *              $ref: '#/components/responses/UserAnimaltypeDeleted'
  *          400:
  *              description: Bad request

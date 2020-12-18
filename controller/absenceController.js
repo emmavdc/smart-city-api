@@ -23,12 +23,15 @@ const AbsenceModel = require("../model/absence");
  */
 
 module.exports.postAbsence = async(req, res) =>{
-    const client = await pool.connect();
     const userId = req.session.userId;
     const absence = req.body;
 
-    //^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$
-
+    if (!absence.date) {
+        res.sendStatus(400);
+        return;
+      }
+    
+    const client = await pool.connect();
     try{
         await AbsenceModel.createAbsence(client, absence, userId);
         res.sendStatus(201);
@@ -49,21 +52,28 @@ module.exports.postAbsence = async(req, res) =>{
  *  responses:
  *      AbsenceDeleted:
  *          description: User Absence deleted
+ *      AbsenceNotFound:
+ *          description: User Absence not found
  * 
  */
 
 module.exports.deleteAbsence = async(req, res) =>{
-    const client = await pool.connect();
-    const absence_id = req.params.id;
+    const absenceId = req.params.id;
     const userId = req.session.userId;
 
+    if (isNaN(absenceId)) {
+        res.sendStatus(400);
+        return;
+    }
+    
+    const client = await pool.connect();
     try{
-        const rowCount = await AbsenceModel.deleteAbsence(client, absence_id,userId);
-        if(rowCount != 0){
-            res.sendStatus(200);
+        const rowCount = await AbsenceModel.deleteAbsence(client, absenceId,userId);
+        if(rowCount == 1){
+            res.sendStatus(204);
         }
         else{
-            res.sendStatus(403);
+            res.sendStatus(404);
         }
        
     }
@@ -87,9 +97,9 @@ module.exports.deleteAbsence = async(req, res) =>{
  */
 
 module.exports.getAbsences = async(req, res) =>{
-    const client = await pool.connect();
     const userId = req.session.userId;
 
+    const client = await pool.connect();
     try{
         const absences = await AbsenceModel.getAbsences(client,userId);
         res.json(absences);

@@ -6,7 +6,7 @@ const identificationMiddleware = require("../middleware/identification");
 
 /**
  * @swagger
- * /absences:
+ * /v1/absences:
  *  post:
  *      tags:
  *          - absence
@@ -30,7 +30,7 @@ router.post('/', identificationMiddleware.identification, AbsenceController.post
 
 /**
  * @swagger
- * /absences/{id}:
+ * /v1/absences/{id}:
  *  delete:
  *      tags:
  *          - absence
@@ -45,12 +45,14 @@ router.post('/', identificationMiddleware.identification, AbsenceController.post
  *            schema:
  *              type: integer
  *      responses:
- *          200:
+ *          204:
  *              $ref: '#/components/responses/AbsenceDeleted'
  *          400:
  *               description: Bad request
  *          401:
  *              $ref: '#/components/responses/MissingJWT'
+ *          404:
+ *               $ref: '#/components/responses/AbsenceNotFound'
  *          500:
  *              description: Server error
  */
@@ -58,7 +60,7 @@ router.delete('/:id', identificationMiddleware.identification, AbsenceController
 
 /**
  * @swagger
- * /absences:
+ * /v1/absences:
  *  get:
  *      tags:
  *          - absence

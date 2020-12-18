@@ -50,10 +50,15 @@ module.exports.getAnimalTypes = async (req, res) => {
 
 
 module.exports.postSupplierAnimal = async (req, res) => {
-    const client = await pool.connect();
     const {animalTypeId} = req.body; 
     const userId = req.session.userId;
 
+    if (isNaN(animalTypeId)) {
+        res.sendStatus(400);
+        return;
+    }
+
+    const client = await pool.connect();
     try {
         await AnimalTypeModel.createSupplierAnimal(client, animalTypeId, userId);
         res.sendStatus(201);
@@ -75,8 +80,8 @@ module.exports.postSupplierAnimal = async (req, res) => {
  */
 
 module.exports.getSupplierAnimalTypes = async (req, res) => {
-    const client = await pool.connect();
     const userId = req.session.userId;
+    const client = await pool.connect();
 
     try {
         const animalTypes = await AnimalTypeModel.getSupplierAnimalTypes(client,userId);
@@ -102,14 +107,19 @@ module.exports.getSupplierAnimalTypes = async (req, res) => {
 
 
 module.exports. deleteSupplierAnimal = async (req, res) => {
-    const client = await pool.connect();
     const animalTypeId = req.params.id;
     const userId = req.session.userId;
 
+    if (isNaN(animalTypeId)) {
+        res.sendStatus(400);
+        return;
+    }
+
+    const client = await pool.connect();
     try{
         const rowCount = await AnimalTypeModel.deleteSupplierAnimal(client, animalTypeId,userId);
         if(rowCount != 0){
-            res.sendStatus(200);
+            res.sendStatus(204);
         }
         else{
             res.sendStatus(403);

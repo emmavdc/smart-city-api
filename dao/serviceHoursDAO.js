@@ -1,4 +1,3 @@
-const router = require("../route/serviceHours");
 const UserDAO = require("./userDAO");
 
 module.exports.insertServicesHours = async (client, serviceHours, userId) => {
@@ -104,7 +103,7 @@ module.exports.selectServicesHoursAsASupplier = async(client, userId) =>{
        to_char(sh.start_date_time,'DD-MM-YYYY HH24:MI:SS') start_date_time,
        to_char(sh.end_date_time,'DD-MM-YYYY HH24:MI:SS') end_date_time,
        sh.status,
-       sh.description_response,
+       sh.description_demande,
        sh.type,
        u.firstname,
        u.phone,
@@ -149,12 +148,12 @@ module.exports.selectServicesHours = async(client, filter) =>{
    }
 
    return await client.query(`
-   SELECT supus.lastname as supplier_lastname,
+   SELECT sh.service_hours_id, supus.lastname as supplier_lastname,
         supus.firstname as supplier_firstname,
         cusus.lastname as customer_lastname,
         cusus.firstname as customer_firstname,
         to_char(sh.start_date_time,'DD-MM-YYYY HH24:MI:SS') start_date_time,
-        to_char(sh.start_date_time,'DD-MM-YYYY HH24:MI:SS') end_date_time,
+        to_char(sh.end_date_time,'DD-MM-YYYY HH24:MI:SS') end_date_time,
         sh.type
    FROM smartcity."service_hours" sh
    JOIN smartcity."supplier" as sup ON sup.supplier_id = sh.supplier_id

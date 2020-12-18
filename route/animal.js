@@ -6,7 +6,7 @@ const identificationMiddleware = require("../middleware/identification");
 
 /**
  * @swagger
- * /animals:
+ * /v1/animals:
  *  get:
  *      tags:
  *          - animal
@@ -26,7 +26,7 @@ router.get('/', identificationMiddleware.identification, AnimalController.getAni
 
 /**
  * @swagger
- * /animals:
+ * /v1/animals:
  *  post:
  *      tags:
  *          - animal
@@ -51,7 +51,7 @@ router.post('/', identificationMiddleware.identification, AnimalController.postA
 
 /**
  * @swagger
- * /animals/{id}:
+ * /v1/animals/{id}:
  *  delete:
  *      tags:
  *          - animal
@@ -66,7 +66,7 @@ router.post('/', identificationMiddleware.identification, AnimalController.postA
  *            schema:
  *              type: integer
  *      responses:
- *          200:
+ *          204:
  *              $ref: '#/components/responses/AnimalDeleted'
  *          400:
  *              description: Bad request
@@ -83,7 +83,7 @@ router.delete('/:id', identificationMiddleware.identification, AnimalController.
 
 /**
  * @swagger
- * /animals/{id}:
+ * /v1/animals/{id}:
  *  put:
  *      tags:
  *          - animal
@@ -106,6 +106,8 @@ router.delete('/:id', identificationMiddleware.identification, AnimalController.
  *               description: Bad request
  *          401:
  *              $ref: '#/components/responses/MissingJWT'
+ *          404:
+ *              $ref: '#/components/responses/AnimalNotFound'
  *          500:
  *              description: Server error
  *

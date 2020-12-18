@@ -75,46 +75,31 @@ const jwt = require("jsonwebtoken");
  */
 
 module.exports.postUser = async (req, res) => {
-  const client = await pool.connect();
   const user = req.body;
 
-  // a user is never an admin
+  // An admin is not create via this method
   user.isAdmin = false;
 
-  if (user.customer != null) {
-    if (
-      typeof user.customer.searchWalker !== "boolean" ||
-      typeof user.customer.searchHost !== "boolean"
-    ) {
-      res.sendStatus(400);
-      return;
-    }
+  if (!validate(user)) {
+    res.sendStatus(400);
+    return;
   }
 
-  if (user.supplier != null) {
-    if (
-      typeof user.supplier.isHost !== "boolean" ||
-      typeof user.supplier.isAnimalWalker !== "boolean"
-    ) {
-      res.sendStatus(400);
-      return;
-    }
-  }
-
+  const client = await pool.connect();
   try {
     await client.query("BEGIN;");
     const userId = await UserModel.createUser(client, user);
     if (userId) {
-
       const expiresIn = "1y";
 
       const token = jwt.sign(
         {
           email: user.email,
-          userId: userId
+          userId: userId,
         },
-        process.env.SECRET, {
-          expiresIn: expiresIn
+        process.env.SECRET,
+        {
+          expiresIn: expiresIn,
         }
       );
 
@@ -122,7 +107,7 @@ module.exports.postUser = async (req, res) => {
       res.status(201).send(token);
     } else {
       await client.query("ROLLBACK");
-      res.status(409).json({ error: "l'utilisateur existe déjà!" });
+      res.status(409).json("l'utilisateur existe déjà!");
     }
   } catch (e) {
     await client.query("ROLLBACK;");
@@ -133,12 +118,13 @@ module.exports.postUser = async (req, res) => {
   }
 };
 
+// secret method only use by restricted people to add an admin
 module.exports.addAdminUser = async (req, res) => {
   const user = req.body;
-  if (user.secret == process.env.CREATE_ADMIN_SECRET) {
-    const client = await pool.connect();
-    user.isAdmin = true;
 
+  if (user.secret == process.env.CREATE_ADMIN_SECRET) {
+    user.isAdmin = true;
+    const client = await pool.connect();
     try {
       await client.query("BEGIN;");
       await UserModel.createUser(client, user);
@@ -181,25 +167,26 @@ module.exports.addAdminUser = async (req, res) => {
 module.exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
-  if (email === undefined || password === undefined) {
+  if (!email || !password) {
     res.sendStatus(400);
-  } else {
-    const client = await pool.connect();
-    const user = req.body;
+    return;
+  }
 
-    try {
-      const jwt = await UserModel.loginUser(client, user);
-      if (jwt) {
-        res.status(200).send(jwt);
-      } else {
-        res.sendStatus(401);
-      }
-    } catch (e) {
-      console.log(e);
-      res.sendStatus(500);
-    } finally {
-      client.release();
+  const user = req.body;
+
+  const client = await pool.connect();
+  try {
+    const jwt = await UserModel.loginUser(client, user);
+    if (jwt) {
+      res.status(200).send(jwt);
+    } else {
+      res.sendStatus(401);
     }
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  } finally {
+    client.release();
   }
 };
 
@@ -212,30 +199,28 @@ module.exports.loginUser = async (req, res) => {
  *
  */
 module.exports.getUser = async (req, res) => {
-
   const user_id = req.params.id;
 
   if (isNaN(user_id)) {
     res.sendStatus(400);
-  } else {
-    const client = await pool.connect();
+    return;
+  }
 
-    try {
-      const user = await UserModel.getUser(client, user_id);
-      if (user) {
-        res.json(user);
-      } else {
-        res.sendStatus(401);
-      }
-    } catch (e) {
-      console.log(e);
-      res.sendStatus(500);
-    } finally {
-      client.release();
+  const client = await pool.connect();
+  try {
+    const user = await UserModel.getUser(client, user_id);
+    if (user) {
+      res.json(user);
+    } else {
+      res.sendStatus(401);
     }
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  } finally {
+    client.release();
   }
 };
-
 
 /**
  * @swagger
@@ -282,7 +267,7 @@ module.exports.getUser = async (req, res) => {
  *                                      type: boolean
  *                                  searchHost:
  *                                      type: boolean
- *                                  commune:
+ *                                  locality:
  *                                      type: string
  *                              required:
  *                                  - searchWalker
@@ -296,7 +281,7 @@ module.exports.getUser = async (req, res) => {
  *                                      type: boolean
  *                                  slogan:
  *                                      type: string
- *                                  commune:
+ *                                  locality:
  *                                      type: string
  *                                  weightMax:
  *                                      type: integer
@@ -317,22 +302,113 @@ module.exports.getUser = async (req, res) => {
  */
 
 module.exports.putUser = async (req, res) => {
-  const client = await pool.connect();
   let userId = req.session.userId;
-  const isAdmin = req.session.isAdmin;
-  const userIdParams = req.params.id;
   const user = req.body;
+  user.isAdmin = false;
 
-  if (!isAdmin && Number(userId) !== Number(userIdParams)) {
-    res.sendStatus(403);
+  if (!validate(user)) {
+    res.sendStatus(400);
     return;
   }
+  
 
-  if (isAdmin) userId = userIdParams;
-
+  const client = await pool.connect();
   try {
     await client.query("BEGIN;");
     await UserModel.updateUser(client, user, userId);
+    await client.query("COMMIT");
+    res.sendStatus(200);
+  } catch (error) {
+    await client.query("ROLLBACK;");
+    console.log(error);
+    res.sendStatus(500);
+  } finally {
+    client.release();
+  }
+};
+
+//patch for admin
+
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      UserUpdatedByAdmin:
+ *          description: The user is updated by admin
+ *
+ *  requestBodies:
+ *      UpdateUserByAdmin:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          email:
+ *                              type: string
+ *                          password:
+ *                              type: string
+ *                          firstname:
+ *                              type: string
+ *                          lastname:
+ *                              type: string
+ *                          phone:
+ *                              type: string
+ *                          locality:
+ *                              type: string
+ *                          postalCode:
+ *                              type: integer
+ *                          streetNumber:
+ *                              type: string
+ *                          streetName:
+ *                              type: string
+ *                          country:
+ *                              type: string
+ *                          customer:
+ *                              type: object
+ *                              properties:
+ *                                  searchWalker:
+ *                                      type: boolean
+ *                                  searchHost:
+ *                                      type: boolean
+ *                              required:
+ *                                  - searchWalker
+ *                                  - searchHost
+ *                          supplier:
+ *                              type: object
+ *                              properties:
+ *                                  isHost:
+ *                                      type: boolean
+ *                                  isAnimalWalker:
+ *                                      type: boolean
+ *                              required:
+ *                                  - isHost
+ *                                  - isAnimalWalker
+ *                      required:
+ *                          - email
+ *                          - password
+ *                          - firstname
+ *                          - lastname
+ *                          - phone
+ *                          - locality
+ *                          - postalCode
+ *                          - streetNumber
+ *                          - streetName
+ *                          - country
+ */
+
+module.exports.patchUser = async (req, res) => {
+  const user = req.body;
+  const userIdParams = req.params.id;
+
+  if (!validate(user)) {
+    res.sendStatus(400);
+    return;
+  }
+
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN;");
+    await UserModel.updateUser(client, user, userIdParams, true);
     await client.query("COMMIT");
     res.sendStatus(200);
   } catch (error) {
@@ -356,9 +432,9 @@ module.exports.putUser = async (req, res) => {
  */
 
 module.exports.getUsers = async (req, res) => {
-  const client = await pool.connect();
-
   const filters = req.query;
+
+  const client = await pool.connect();
   try {
     const users = await UserModel.getUsers(client, filters);
     res.json(users);
@@ -382,13 +458,18 @@ module.exports.getUsers = async (req, res) => {
  */
 
 module.exports.deleteUser = async (req, res) => {
-  const client = await pool.connect();
   const userId = req.params.id;
 
+  if (isNaN(userId)) {
+    res.sendStatus(400);
+    return;
+  }
+
+  const client = await pool.connect();
   try {
     const rowCount = await UserModel.deleteUser(client, userId);
     if (rowCount == 1) {
-      res.sendStatus(200);
+      res.sendStatus(204);
     } else {
       res.sendStatus(404);
     }
@@ -472,27 +553,13 @@ module.exports.deleteUser = async (req, res) => {
  *
  */
 
-
 module.exports.addUserByAdmin = async (req, res) => {
   const user = req.body;
 
-  if (
-    !user.email ||
-    !user.password ||
-    !user.firstname ||
-    !user.lastname ||
-    !user.phone ||
-    !user.locality ||
-    !user.postalCode ||
-    !user.streetNumber ||
-    !user.streetName ||
-    !user.country
-  ) {
+  if (!validate(user)) {
     res.sendStatus(400);
     return;
   }
-
-  if (!user.isAdmin) user.isAdmin = false;
 
   const client = await pool.connect();
 
@@ -514,3 +581,24 @@ module.exports.addUserByAdmin = async (req, res) => {
     client.release();
   }
 };
+
+function validate(user) {
+  return (
+    user.email &&
+    user.password &&
+    user.firstname &&
+    user.lastname &&
+    user.phone &&
+    user.locality &&
+    user.postalCode &&
+    user.streetNumber &&
+    user.streetName &&
+    user.country &&
+    user.supplier &&
+    user.supplier.isHost != undefined &&
+    user.supplier.isAnimalWalker != undefined &&
+    user.customer &&
+    user.customer.searchHost != undefined &&
+    user.customer.searchWalker != undefined
+  );
+}

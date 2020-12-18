@@ -6,13 +6,13 @@ const authorizationMiddleware = require("../middleware/authorization")
 
 /**
  * @swagger
- * /serviceshours:
+ * /v1/serviceshours:
  *  post:
  *      tags:
  *          - service hours
  *      security:
  *          - bearerAuth: []
- *      description: A service hours is created bu the customer
+ *      description: A service hours is created by the customer
  *      requestBody:
  *          $ref: '#/components/requestBodies/AddServicesHour'
  *      responses:
@@ -32,7 +32,7 @@ router.post('/', identificationMiddleware.identification, ServiceHoursController
 
 /**
  * @swagger
- * /serviceshours/{id}:
+ * /v1/serviceshours/{id}:
  *  patch:
  *      tags:
  *          - service hours
@@ -64,7 +64,7 @@ router.patch('/:id',identificationMiddleware.identification, ServiceHoursControl
 
 /**
  * @swagger
- * /serviceshours/customer:
+ * /v1/serviceshours/customer:
  *  get:
  *      tags:
  *          - service hours
@@ -86,7 +86,7 @@ router.get('/customer', identificationMiddleware.identification, ServiceHoursCon
 
 /**
  * @swagger
- * /serviceshours/supplier:
+ * /v1/serviceshours/supplier:
  *  get:
  *      tags:
  *          - service hours
@@ -108,7 +108,7 @@ router.get('/supplier', identificationMiddleware.identification, ServiceHoursCon
 
 /**
  * @swagger
- * /serviceshours/{id}:
+ * /v1/serviceshours/{id}:
  *  delete:
  *      tags:
  *          - service hours
@@ -123,7 +123,7 @@ router.get('/supplier', identificationMiddleware.identification, ServiceHoursCon
  *            schema:
  *              type: integer
  *      responses:
- *          200:
+ *          204:
  *              $ref: '#/components/responses/ServiceHoursDeleted'
  *          400:
  *               description: Bad request
@@ -139,11 +139,32 @@ router.delete('/:id', identificationMiddleware.identification, authorizationMidd
 
 /**
  * @swagger
- * /serviceshours:
+ * /v1/serviceshours:
  *  get:
  *      tags:
  *          - service hours
  *      description: Get services hours which have specific data
+ *      parameters:
+ *          - in : query
+ *            name : supplierLastame
+ *            description: Get users who have specific supplier lastame data
+ *            schema:
+ *              type: string
+ *          - in : query
+ *            name : customerLastame
+ *            description: Get users who have specific customer lastame data
+ *            schema:
+ *              type: string
+ *          - in : query
+ *            name : startDate
+ *            description: Get users who have specific start date data
+ *            schema:
+ *              type: string
+ *          - in : query
+ *            name : type
+ *            description: Get users who have specific type data
+ *            schema:
+ *              type: string
  *      security:
  *          - bearerAuth: []
  *      responses:

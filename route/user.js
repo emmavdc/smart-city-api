@@ -7,7 +7,7 @@ const authorizationMiddleware = require("../middleware/authorization")
 
 /**
  * @swagger
- * /users:
+ * /v1/users:
  *  post:
  *      tags:
  *          - user
@@ -30,7 +30,7 @@ router.post('/',  UserController.postUser);
 
 /**
  * @swagger
- * /users/actions/login:
+ * /v1/users/actions/login:
  *  post:
  *      tags:
  *          - user
@@ -58,7 +58,7 @@ router.post('/actions/addadmin', UserController.addAdminUser);
 
 /**
  * @swagger
- * /users/{id}:
+ * /v1/users/{id}:
  *  put:
  *      tags:
  *          - user
@@ -92,9 +92,48 @@ router.post('/actions/addadmin', UserController.addAdminUser);
 //TODO #6 update user 
 router.put('/:id',identificationMiddleware.identification, UserController.putUser);
 
+
+//patch user for admin
+
 /**
  * @swagger
- * /users/{id}:
+ * /v1/users/{id}:
+ *  patch:
+ *      tags:
+ *          - user
+ *      security:
+ *          - bearerAuth: []
+ *      description: Update data of a specific user by admin
+ *      parameters:
+ *          - name : id
+ *            description : User id
+ *            in: path
+ *            required: true
+ *            schema:
+ *              type: integer
+ *      requestBody:
+ *          $ref: '#/components/requestBodies/UpdateUserByAdmin'
+ *      responses:
+ *          200:
+ *              $ref: '#/components/responses/UserUpdatedByAdmin'
+ *          400:
+ *              description: Bad request
+ *          401:
+ *              $ref: '#/components/responses/MissingJWT'
+ *          403:
+ *              $ref: '#/components/responses/mustBeAdministrator'
+ *          500:
+ *              description: Server error
+ * 
+ *
+ */
+
+router.patch('/:id',identificationMiddleware.identification, authorizationMiddleware.mustBeAdministrator, UserController.patchUser);
+
+
+/**
+ * @swagger
+ * /v1/users/{id}:
  *  get:
  *      tags:
  *          - user
@@ -127,11 +166,28 @@ router.get('/:id',identificationMiddleware.identification, UserController.getUse
 
 /**
  * @swagger
- * /users:
+ * /v1/users:
  *  get:
  *      tags:
  *          - user
  *      description: Get users who have specific data
+ *      parameters:
+ *          - in : query
+ *            name : lastname
+ *            description: Get users who have specific lastname data
+ *            schema:
+ *              type: string
+ *          - in : query
+ *            name : locality
+ *            description: Get users who have specific locality data
+ *            schema:
+ *              type: string
+ *          - in : query
+ *            name : email
+ *            description: Get users who have specific email data
+ *            schema:
+ *              type: string
+ *            
  *      security:
  *          - bearerAuth: []
  *      responses:
@@ -153,7 +209,7 @@ router.get('/', identificationMiddleware.identification, authorizationMiddleware
 
 /**
  * @swagger
- * /users/{id}:
+ * /v1/users/{id}:
  *  delete:
  *      tags:
  *          - user
@@ -168,7 +224,7 @@ router.get('/', identificationMiddleware.identification, authorizationMiddleware
  *            schema:
  *              type: integer
  *      responses:
- *          200:
+ *          204:
  *              $ref: '#/components/responses/UserDeleted'
  *          400:
  *              description: Bad request
@@ -187,7 +243,7 @@ router.delete('/:id', identificationMiddleware.identification, authorizationMidd
 
 /**
  * @swagger
- * /users/actions/addbyadmin:
+ * /v1/users/actions/addbyadmin:
  *  post:
  *      tags:
  *          - user
