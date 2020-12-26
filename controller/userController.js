@@ -118,6 +118,50 @@ module.exports.postUser = async (req, res) => {
   }
 };
 
+module.exports.postUserV2 = async (req, res) => {
+  const user = req.body;
+
+  // An admin is not create via this method
+  user.isAdmin = false;
+
+  if (!validate(user)) {
+    res.sendStatus(400);
+    return;
+  }
+
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN;");
+    const userId = await UserModel.createUser(client, user);
+    if (userId) {
+      const expiresIn = "1y";
+
+      const token = jwt.sign(
+        {
+          email: user.email,
+          userId: userId,
+        },
+        process.env.SECRET,
+        {
+          expiresIn: expiresIn,
+        }
+      );
+
+      await client.query("COMMIT");
+      res.status(201).json({token : token});
+    } else {
+      await client.query("ROLLBACK");
+      res.status(409).json("l'utilisateur existe déjà!");
+    }
+  } catch (e) {
+    await client.query("ROLLBACK;");
+    console.log(e);
+    res.sendStatus(500);
+  } finally {
+    client.release();
+  }
+};
+
 // secret method only use by restricted people to add an admin
 module.exports.addAdminUser = async (req, res) => {
   const user = req.body;
