@@ -6,4 +6,8 @@ const authorizationMiddleware = require("../middleware/authorization")
 
 router.post('/',  UserController.postUserV2);
 
+router.post('/actions/login', UserController.loginUser2);
+
+router.get('/:id',identificationMiddleware.identification, UserController.getUser2);
+
 module.exports = router;

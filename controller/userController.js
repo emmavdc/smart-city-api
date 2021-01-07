@@ -138,8 +138,10 @@ module.exports.postUserV2 = async (req, res) => {
 
       const token = jwt.sign(
         {
-          email: user.email,
-          userId: userId,
+          value :{
+            email: user.email,
+            userId: userId
+          }
         },
         process.env.SECRET,
         {
@@ -234,6 +236,32 @@ module.exports.loginUser = async (req, res) => {
   }
 };
 
+module.exports.loginUser2 = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.sendStatus(400);
+    return;
+  }
+
+  const user = req.body;
+
+  const client = await pool.connect();
+  try {
+    const jwt = await UserModel.loginUser(client, user);
+    if (jwt) {
+      res.status(201).json({token : jwt});
+    } else {
+      res.sendStatus(401);
+    }
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  } finally {
+    client.release();
+  }
+};
+
 /**
  * @swagger
  * components:
@@ -255,6 +283,56 @@ module.exports.getUser = async (req, res) => {
     const user = await UserModel.getUser(client, user_id);
     if (user) {
       res.json(user);
+    } else {
+      res.sendStatus(401);
+    }
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  } finally {
+    client.release();
+  }
+};
+
+module.exports.getUser2 = async (req, res) => {
+  const user_id = req.params.id;
+
+  if (isNaN(user_id)) {
+    res.sendStatus(400);
+    return;
+  }
+
+  const client = await pool.connect();
+  try {
+    const user = await UserModel.getUser2(client, user_id);
+    if (user) {
+
+      const userJson =
+      {
+        email: user.email,
+        password: user.password,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        phone: user.phone,
+        locality: user.user_locality,
+        postalCode: user.postal_code,
+        streetNumber: user.street_number,
+        streetName: user.street_name,
+        country: user.country,
+        customer: {
+          searchWalker: user.search_walker,
+          searchHost: user.search_host,
+          locality : user.cus_locality
+        },
+        supplier: {
+          isHost: user.is_host,
+          isAnimalWalker: user.is_animal_walker,
+          slogan : user.slogan,
+          locality : user.sup_locality,
+          weightMax : user.weight_max
+        }
+      }
+      res.json(userJson);
     } else {
       res.sendStatus(401);
     }

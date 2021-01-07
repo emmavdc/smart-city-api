@@ -68,3 +68,8 @@ module.exports.deleteUser = async (client, userId) => {
 
   return rowCount;
 };
+
+module.exports.getUser2 = async (client, user_id) => {
+  const { rows: users } = await UserDAO.selectUser2(client, user_id);
+  return users[0];
+};

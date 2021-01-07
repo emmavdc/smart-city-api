@@ -89,6 +89,24 @@ module.exports.selectUser = async (client, user_Id) => {
   );
 };
 
+// select user for android
+module.exports.selectUser2 = async (client, user_Id) => {
+  return await client.query(
+    `
+        SELECT  u.user_id, email, password, firstname, lastname, phone,
+                is_admin, u.locality as user_locality , postal_code, street_number,
+                street_name, country, c.locality as cus_locality , c.search_walker, c.search_host,
+                s.is_host, s.is_animal_walker, s.slogan, s.locality as sup_locality, s.weight_max
+        FROM smartcity."user" u 
+        JOIN smartcity."customer" c ON c.user_id = u.user_id
+        JOIN smartcity."supplier" s ON s.user_id = u.user_id
+        WHERE u.user_Id = $1`,
+    [user_Id]
+  );
+};
+
+
+
 module.exports.selectCustomer = async (client, userId) => {
   const { rows: customer } = await client.query(
     `

@@ -15,6 +15,7 @@ router.use("/v1/servicesHours", ServiceHoursRouter);
 router.use("/v1/rankings", RankingRouter);
 
 router.use("/v2/users", UserRouter2);
+router.use("/v2/users", UserRouter2);
 
 module.exports = router;
 
