@@ -259,6 +259,63 @@ module.exports.updateUser = async (client, user, userID, isPatch) => {
   return;
 };
 
+// update user for android
+module.exports.updateUser2 = async (client, user, userID) => {
+  await client.query(
+    `
+    UPDATE smartcity."user" SET email = $1, firstname = $2,
+                            lastname = $3, phone = $4, is_admin = $5,
+                            locality = $6, postal_code = $7, street_number = $8,
+                            street_name = $9, country = $10, picture = $11 
+                            WHERE user_id = $12;`,
+    [
+      user.email,
+      user.firstname,
+      user.lastname,
+      user.phone,
+      user.isAdmin,
+      user.locality,
+      user.postalCode,
+      user.streetNumber,
+      user.streetName,
+      user.country,
+      user.picture,
+      userID,
+    ]
+  );
+
+  if (user.customer != null) {
+    await client.query(
+      `UPDATE smartcity."customer" SET locality = $1, search_walker = $2,
+                                                     search_host = $3
+       WHERE user_id = $4;`,
+      [
+        user.customer.locality,
+        user.customer.searchWalker,
+        user.customer.searchHost,
+        userID
+      ]
+    );
+  }
+
+  if (user.supplier != null) {
+    await client.query(
+      `UPDATE smartcity."supplier" SET is_host = $1, is_animal_walker = $2,
+                                                      slogan = $3, locality = $4, weight_max = $5 
+                                                      WHERE user_id = $6;`,
+      [
+        user.supplier.isHost,
+        user.supplier.isAnimalWalker,
+        user.supplier.slogan,
+        user.supplier.locality,
+        user.supplier.weightMax,
+        userID,
+      ]
+    );
+  }
+  return;
+}
+
 module.exports.deleteUser = async (client, userId) => {
   const { rowCount } = await client.query(
     `

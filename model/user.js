@@ -70,6 +70,10 @@ module.exports.deleteUser = async (client, userId) => {
 };
 
 module.exports.getUser2 = async (client, user_id) => {
-  const { rows: users } = await UserDAO.selectUser2(client, user_id);
+  const { rows: users } = await UserDAO.selectUser2(client, user_id); 
   return users[0];
+};
+
+module.exports.updateUser2 = async(client,user, userId)=>{
+ await UserDAO.updateUser2(client,user, userId)
 };

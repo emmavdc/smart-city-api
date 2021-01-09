@@ -9,5 +9,6 @@ router.post('/',  UserController.postUserV2);
 router.post('/actions/login', UserController.loginUser2);
 
 router.get('/:id',identificationMiddleware.identification, UserController.getUser2);
+router.put('/:id',identificationMiddleware.identification, UserController.putUser2);
 
 module.exports = router;

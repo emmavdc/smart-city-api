@@ -449,6 +449,27 @@ module.exports.putUser = async (req, res) => {
   }
 };
 
+// put user for android
+module.exports.putUser2 = async (req, res) => {
+  let userId = req.session.userId;
+  const user = req.body;
+  user.isAdmin = false;
+
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN;");
+    await UserModel.updateUser2(client, user, userId);
+    await client.query("COMMIT");
+    res.status(200).json("user updated");
+  } catch (error) {
+    await client.query("ROLLBACK;");
+    console.log(error);
+    res.sendStatus(500);
+  } finally {
+    client.release();
+  }
+};
+
 //patch for admin
 
 /**
