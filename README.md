@@ -1,2 +1,2 @@
 # smart-city-api 
-2020/2021 - Emma Vandecasteele - 3IGA
+2020/2021 - Emma Vandecasteele
