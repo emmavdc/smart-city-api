@@ -1,1 +1,3 @@
-# smart-city-api - 2020/2021 - Dylan Sohet & Emma Vandecasteele - 3IGA
+# API of Smart-city project
+
+2020/2021 - Emma Vandecasteele
